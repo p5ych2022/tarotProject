@@ -8,7 +8,7 @@ public class TarotProjectApplication {
 
 
     public static void main(String[] args) {
+
         SpringApplication.run(TarotProjectApplication.class, args);
     }
-
 }
