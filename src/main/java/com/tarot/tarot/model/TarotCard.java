@@ -1,19 +1,11 @@
 package com.tarot.tarot.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
-@Entity
+
 public class TarotCard {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private String name;
     private String description;
 
-    // Constructors, getters, and setters
     public TarotCard() {
     }
 
@@ -22,5 +14,17 @@ public class TarotCard {
         this.description = description;
     }
 
-    // standard getters and setters
+    public String getName() {
+        return name;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }
