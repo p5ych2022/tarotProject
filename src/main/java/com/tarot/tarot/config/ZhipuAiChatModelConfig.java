@@ -12,7 +12,7 @@ public class ZhipuAiChatModelConfig {
 
         Dotenv dotenv = Dotenv.load();
         String apiKey = dotenv.get("ZHIPU_API_KEY");
-        System.out.println("Loaded ZHIPU_API_KEY: " + apiKey);
+        // System.out.println("Loaded ZHIPU_API_KEY: " + apiKey);
 
         if (apiKey == null || apiKey.isEmpty()) {
             System.err.println("Failed to load API key from .env file");
