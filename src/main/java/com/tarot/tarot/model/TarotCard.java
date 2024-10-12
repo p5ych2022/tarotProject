@@ -14,15 +14,15 @@ public class TarotCard {
     public TarotCard() {
     }
 
-    public TarotCard(String name,String orientation, String description) {
-        this.title = title;
-        this.explain = explain;
-        this.negative = negative;
-        this.work = work;
-        this.love = love;
-        this.friend = friend;
-        this.affection = affection;
-    }
+//    public TarotCard(String name, String orientation, String description) {
+//        this.title = title;
+//        this.explain = explain;
+//        this.negative = negative;
+//        this.work = work;
+//        this.love = love;
+//        this.friend = friend;
+//        this.affection = affection;
+//    }
 
     public String getTitle() {
         return title;
@@ -70,5 +70,10 @@ public class TarotCard {
     }
     public void setAffection(String affection) {
         this.affection = affection;
+    }
+
+    @Override
+    public String toString() {
+        return "TarotCard{title='" + title + "', explain='" + explain + "', work='" + work + "', love='" + love + "', friend='" + friend + "', affection='" + affection + "'}";
     }
 }

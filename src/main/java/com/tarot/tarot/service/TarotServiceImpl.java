@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import java.util.Collections;
+import java.security.SecureRandom;
 
 @Service
 public class TarotServiceImpl implements TarotService {
@@ -33,7 +34,6 @@ public class TarotServiceImpl implements TarotService {
             e.printStackTrace();
             throw new RuntimeException("Failed to load tarot cards from JSON", e);
         }
-
 
 //        cards.put(1, new TarotCard("愚者 - Ο", "正位","意味着充满无限的可能性，或许会有出乎意料的机会或灵感降临，所以可以不用过度在意世俗的眼光，依照自己的心意顺其自然过生活。"));
 //        cards.put(2,new TarotCard("愚者 - Ο","逆位","迟迟犹豫不决的行为会在近期特别明显，但这样的态度反而会让人有不负责任的感觉，间接失去身旁人们的信任，所以学习如何拿捏自由与社会化之间的平衡，就会是很重要的课题。"));
@@ -106,7 +106,14 @@ public class TarotServiceImpl implements TarotService {
     @Override
     public List<TarotCard> drawThreeCards() {
         List<TarotCard> deck = new ArrayList<>(cards.values());
-        Collections.shuffle(deck);
+        // Collections.shuffle(deck);
+        SecureRandom random = new SecureRandom();
+        Collections.shuffle(deck, random);
+
+//        System.out.println("Deck size: " + deck.size());
+//        deck.forEach(card -> System.out.println(card));
+
+
         return deck.subList(0, 3);
     }
 }
