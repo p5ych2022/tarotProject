@@ -7,7 +7,7 @@ public interface  UserService {
     // register
     User registerUser(String email, String password, String username) throws Exception;
     // forget password
-    void forgetPassword(String email, String updatePassword) throws Exception;
+    void forgetPassword(String email, String newpassword) throws Exception;
     // send email
     String sendEmail(String email) throws Exception;
     // verify code

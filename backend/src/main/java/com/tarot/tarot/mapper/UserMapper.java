@@ -14,7 +14,7 @@ public interface UserMapper extends BaseMapper<User>{
     public int addUser(User user);
 
     // forget password
-    int changePassword(String email, String password);
+    boolean changePassword(String email, String encodedPassword);
 
     // check if email or username exists
     boolean existsByEmail(String email);
