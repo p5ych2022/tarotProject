@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tarot")
-public class TarotController {
+public class  TarotController {
     @Autowired
     private TarotService tarotService;
 

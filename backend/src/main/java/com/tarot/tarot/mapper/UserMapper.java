@@ -1,0 +1,22 @@
+package com.tarot.tarot.mapper;
+
+import org.apache.ibatis.annotations.Mapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.tarot.tarot.model.User;
+import org.springframework.stereotype.Repository;
+
+@Mapper
+public interface UserMapper extends BaseMapper<User>{
+    // login
+    public User getUserByName(String userName);
+    public User getUserByEmail(String email);
+    // register
+    public int addUser(User user);
+
+    // forget password
+    int changePassword(String email, String password);
+
+    // check if email or username exists
+    boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
+}
