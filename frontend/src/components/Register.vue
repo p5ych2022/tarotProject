@@ -9,8 +9,7 @@
         <div class="initial_right_hand" id="right_hand"></div>
       </div>
 
-      <p style="padding: 30px 0px 10px; position: relative;"><span
-        class=""></span> <input id="email" class="ipt" type="email" v-model="email" placeholder="请输入邮箱"
+      <p style="padding: 30px 0px 10px; position: relative;"> <input id="email" class="ipt" type="email" v-model="email" placeholder="请输入邮箱"
                                       value="">
       </p>
       <button @click="sendCode" style="margin-top: -10px;margin-bottom: 10px;">发送验证码</button>
@@ -18,14 +17,13 @@
         ></span> <input id="code" class="ipt" type="text" v-model="code" placeholder="验证码"
                                       value="">
       </p>
-      <p style=" position: relative;"><span
-        class="u_logo"></span> <input id="username" class="ipt" type="text" v-model="username" placeholder="请输入用户名"
+      <p style=" position: relative;"> <input id="username" class="ipt" type="text" v-model="username" placeholder="请输入用户名"
                                       value="">
       </p>
-      <p style="position: relative;"><span class="p_logo"></span>
+      <p style="position: relative;">
         <input class="ipt" id="password" type="password" v-model="password" placeholder="请输入密码" value="">
       </p>
-      <p style="position: relative;margin-top: 10px;"><span class="p_logo"></span>
+      <p style="position: relative;margin-top: 10px;">
         <input class="ipt" id="password2" type="password" v-model="password2" placeholder="请再次输入密码" value="">
       </p>
 

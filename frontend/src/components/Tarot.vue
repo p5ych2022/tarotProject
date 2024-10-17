@@ -1,169 +1,98 @@
 <template>
-   <div style="text-align:center">
-     登录成功！
-     <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1588785777907&di=df2efd0ae3686a12f071ab67e3e00a2d&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20180523%2F93c796f46fd5417a9af7ba0b9ae87627.gif">
-     <router-link to='/'>
-       <span>返回首页</span>
-     </router-link>
-   </div>
+ <div class="tarot-page">
+    <div class="message-input">
+      <input type="text" v-model="message" placeholder="请输入您的问题" />
+      <button @click="interpretCards">抽牌</button>
+    </div>
+
+    <div class="cards-display">
+      <div v-for="card in cards" :key="card.title" class="card">
+        <h4>{{ card.title }}</h4>
+        <p>{{ card.explain }}</p>
+        <div>
+          <strong>work: </strong>{{ card.work }}
+          <br>
+          <strong>love: </strong>{{ card.love }}
+          <br>
+          <strong>friend: </strong>{{ card.friend }}
+          <br>
+          <strong v-if="card.affection">affection: </strong><span v-if="card.affection">{{ card.affection }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tarot-response">
+      <textarea v-model="tarotResponse" placeholder="塔罗解读结果" readonly></textarea>
+    </div>
+  </div>
+
 </template>
 
 <script>
 
 export default {
-  name: 'Login',
-  data () {
+  data() {
     return {
-      nameOrEmail: "",
-      password:"",
-      errorMessage: ''
-    }
+      message: '',
+      cards: [],
+      tarotResponse: ''
+    };
   },
-  // created(){
-
-  // },
-  methods:{
-    async login() {
-      try {
-        const formData = new FormData();
-        formData.append("nameOrEmail", this.nameOrEmail);
-        formData.append("password", this.password);
-
-        // const response = await this.$axios.post("/user/login", formData, {
-        const response = await this.$axios.post("http://127.0.0.1:55551/user/login", {
-          headers: { 'Content-Type': 'multipart/form-data' }
+  methods: {
+    interpretCards() {
+      // 基于抽到的牌解读塔罗
+      this.$axios.get('/zhipu/tarot-three-cards', { params: { message: this.message } })
+        .then(response => {
+          this.tarotResponse = response.data.interpretation;
+          this.cards = response.data.tarotCards	;
+        })
+        .catch(error => {
+          console.error('Error interpreting cards:', error);
         });
-
-        // Handle successful login
-        if (response.data === "登录成功") {
-          this.$router.push({ path: '/tarot' });
-        } else {
-          this.errorMessage = response.data;
-        }
-      } catch (error) {
-        this.errorMessage = error.response.data.message || 'Login failed';
-      }
     }
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   body{
-    background: #ebebeb;
+    background: #000000;
     font-family: "Helvetica Neue","Hiragino Sans GB","Microsoft YaHei","\9ED1\4F53",Arial,sans-serif;
     color: #222;
     font-size: 12px;
-  }
-  *{padding: 0px;margin: 0px;}
-  .top_div{
-    background: #008ead;
-    width: 100%;
-    height: 400px;
-  }
-  .ipt{
-    border: 1px solid #d3d3d3;
-    padding: 10px 10px;
-    width: 290px;
-    border-radius: 4px;
-    padding-left: 35px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
-  }
-  .ipt:focus{
-    border-color: #66afe9;
-    outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
-  }
-  .u_logo{
-    background: url("../assets/images/username.png") no-repeat;
-    padding: 10px 10px;
-    position: absolute;
-    top: 43px;
-    left: 40px;
 
   }
-  .p_logo{
-    background: url("../assets/images/password.png") no-repeat;
-    padding: 10px 10px;
-    position: absolute;
-    top: 12px;
-    left: 40px;
+    .tarot-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80vh; /* 让页面至少填满整个视口高度 */
+    padding: 20px; /* 添加一些内边距 */
+    max-width: 1200px;
+    margin: -100px auto; /* 居中 */
   }
-  a{
-    text-decoration: none;
+   .message-input input {
+
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 20px;
+    height: 100px;
+
+    }
+   .cards-display .card {
+    border: 2px solid #3aff04;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 添加轻微的阴影效果 */
+    background-color: #fff;
   }
-  .tou{
-    background: url("../assets/images/tou.png") no-repeat;
-    width: 97px;
-    height: 92px;
-    position: absolute;
-    top: -87px;
-    left: 140px;
-  }
-  .left_hand{
-    background: url("../assets/images/left_hand.png") no-repeat;
-    width: 32px;
-    height: 37px;
-    position: absolute;
-    top: -38px;
-    left: 150px;
-  }
-  .right_hand{
-    background: url("../assets/images/right_hand.png") no-repeat;
-    width: 32px;
-    height: 37px;
-    position: absolute;
-    top: -38px;
-    right: -64px;
-  }
-  .initial_left_hand{
-    background: url("../assets/images/hand.png") no-repeat;
-    width: 30px;
-    height: 20px;
-    position: absolute;
-    top: -12px;
-    left: 100px;
-  }
-  .initial_right_hand{
-    background: url("../assets/images/hand.png") no-repeat;
-    width: 30px;
-    height: 20px;
-    position: absolute;
-    top: -12px;
-    right: -112px;
-  }
-  .left_handing{
-    background: url("../assets/images/left-handing.png") no-repeat;
-    width: 30px;
-    height: 20px;
-    position: absolute;
-    top: -24px;
-    left: 139px;
-  }
-  .right_handinging{
-    background: url("../assets/images/right_handing.png") no-repeat;
-    width: 30px;
-    height: 20px;
-    position: absolute;
-    top: -21px;
-    left: 210px;
-  }
-  #loginBtn {
-    margin-right: 30px;
-    background: rgb(0, 142, 173);
-    padding: 7px 10px;
-    border-radius: 4px;
-    border: 1px solid rgb(26, 117, 152);
-    border-image: none;
-    color: rgb(255, 255, 255);
-    font-weight: bold;
-    cursor: pointer;
+   .tarot-response textarea {
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    height: 400px;
+    padding: 10px;
   }
 
 </style>

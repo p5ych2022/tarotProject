@@ -1,12 +1,16 @@
 package com.tarot.tarot.controller;
 
+import com.tarot.tarot.DTO.TarotResponse;
 import com.tarot.tarot.model.TarotCard;
 import com.tarot.tarot.service.TarotService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import java.util.List;
+
+import org.springframework.http.ResponseEntity;
 
 
 import dev.langchain4j.data.message.UserMessage;
@@ -17,25 +21,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 
+
 @RestController
 public class ZhipuModelController {
     @Autowired
     private ZhipuAiChatModel zhipuAiChatModel;
     @Autowired
-    private TarotService tarotService;
+            private TarotService tarotService;
 
-    private static final List<TarotCard> defaultTarotCards = List.of();
+            private static final List<TarotCard> defaultTarotCards = List.of();
 
-    @GetMapping("/zhipu/test")
-    public String model(@RequestParam(value = "message", defaultValue = "Hello") String message) {
+            @GetMapping("/zhipu/test")
+            public String model(@RequestParam(value = "message", defaultValue = "Hello") String message) {
          return zhipuAiChatModel.generate(message);
 
     }
 
     @GetMapping("/zhipu/tarot-three-cards")
-    public String tarotMessage(@RequestParam String message) {
-
+    public ResponseEntity<TarotResponse> tarotMessage(@RequestParam String message) {
         List<TarotCard> tarotCards;
+
         try {
             tarotCards = tarotService.drawThreeCards();
         } catch (Exception e) {
@@ -76,6 +81,9 @@ public class ZhipuModelController {
         UserMessage userMessage = UserMessage.userMessage(combinedMessage);
 
         Response<AiMessage> response = zhipuAiChatModel.generate(userMessage);
-        return response.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, response.content().text());
+
+        return ResponseEntity.ok(tarotResponse);
     }
 }

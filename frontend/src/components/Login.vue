@@ -7,10 +7,9 @@
          <div class="initial_left_hand" id="left_hand"></div>
          <div class="initial_right_hand" id="right_hand"></div>
        </div>
-       <p style="padding: 30px 0px 10px; position: relative;"><span
-         class="u_logo"></span> <input id="nameOrEmail" class="ipt" type="text" v-model="nameOrEmail" placeholder="请输入用户名或邮箱" value="">
+       <p style="padding: 30px 0px 10px; position: relative;"> <input id="nameOrEmail" class="ipt" type="text" v-model="nameOrEmail" placeholder="请输入用户名或邮箱" value="">
        </p>
-       <p style="position: relative;"><span class="p_logo"></span>
+       <p style="position: relative;">
          <input class="ipt" id="password" type="password" v-model="password" placeholder="请输入密码" value="">
        </p>
        <div id="errorText" style="height: 20px;margin-top:10px">
@@ -63,7 +62,8 @@ export default {
         });
 
         // Handle successful login
-        if (response.data === "登录成功") {
+        if (response.data.token) {
+          localStorage.setItem('token', response.data.token); // Save the token locally
           this.$router.push({ path: '/tarot' });
         } else {
           this.errorMessage = response.data;
