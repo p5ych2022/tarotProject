@@ -3,7 +3,6 @@ package com.tarot.tarot.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tarot.tarot.model.User;
-import org.springframework.stereotype.Repository;
 
 @Mapper
 public interface UserMapper extends BaseMapper<User>{
