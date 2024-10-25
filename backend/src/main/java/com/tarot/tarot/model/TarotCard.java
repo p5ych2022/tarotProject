@@ -1,7 +1,5 @@
 package com.tarot.tarot.model;
 
-
-
 public class TarotCard {
     private String title;
     private String explain;

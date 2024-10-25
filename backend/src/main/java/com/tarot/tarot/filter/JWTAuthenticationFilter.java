@@ -1,5 +1,6 @@
 package com.tarot.tarot.filter;
 
+import com.tarot.tarot.Security.JwtTokenUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -20,29 +21,16 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest req,
-                                                HttpServletResponse res) throws AuthenticationException {
-        try {
-            User creds = new ObjectMapper()
-                    .readValue(req.getInputStream(), User.class);
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
 
-            return authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            creds.getUsername(),
-                            creds.getPassword(),
-                            new ArrayList<>())
-            );
-        } catch (IOException e) {
-            throw new RuntimeException("Could not read request" + e);
-        }
+        return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest req,
-                                            HttpServletResponse res,
-                                            FilterChain chain,
-                                            Authentication auth) throws IOException, ServletException {
-        String token = JWTUtil.generateToken(((User) auth.getPrincipal()).getUsername());
-        res.addHeader("Authorization", "Bearer " + token);
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+        String token = JwtTokenUtil.generateToken(authResult.getName());
+        response.addHeader("Authorization", "Bearer " + token);
     }
 }

@@ -3,26 +3,21 @@ package com.tarot.tarot.controller;
 import com.tarot.tarot.DTO.TarotResponse;
 import com.tarot.tarot.model.TarotCard;
 import com.tarot.tarot.service.TarotService;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-
-
+import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.model.output.Response;
-import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.model.zhipu.ZhipuAiChatModel;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8080")
 public class ZhipuModelController {
     @Autowired
     private ZhipuAiChatModel zhipuAiChatModel;

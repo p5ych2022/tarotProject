@@ -1,5 +1,6 @@
 package com.tarot.tarot.service;
 
+import com.tarot.tarot.Security.JwtTokenUtil;
 import com.tarot.tarot.model.User;
 import com.tarot.tarot.mapper.UserMapper;
 import com.tarot.tarot.Security.Md5Util;
@@ -74,9 +75,11 @@ public class UserServiceImpl implements UserService{
             throw new RuntimeException("密码错误");
 //            return "密码错误";
         }
-        // 返回登录成功的标识，可以是 JWT token 也可以是其他标识
+        String token = JwtTokenUtil.generateToken(user.getUsername());
 
-        return "登录成功";
+        // 返回 Token 作为登录成功的标识
+        return token;
+
     }
 
     @Override

@@ -1,5 +1,10 @@
 <template>
  <div class="tarot-page">
+  <div class="header">
+      <button @click="logout" class="logout-button">退出登录</button>
+      <button @click="goToLogin" class="login-button">登录</button>
+    </div>
+
     <div class="message-input">
       <input type="text" v-model="message" placeholder="请输入您的问题" />
       <button @click="interpretCards">抽牌</button>
@@ -41,14 +46,34 @@ export default {
   methods: {
     interpretCards() {
       // 基于抽到的牌解读塔罗
-      this.$axios.get('/zhipu/tarot-three-cards', { params: { message: this.message } })
+      this.$axios.get('/zhipu/tarot-three-cards', { params: { message: this.message },
+        headers: {
+          'Authorization':`Bearer ${localStorage.getItem('token')}`
+        }
+      })
         .then(response => {
           this.tarotResponse = response.data.interpretation;
           this.cards = response.data.tarotCards	;
         })
         .catch(error => {
-          console.error('Error interpreting cards:', error);
+          if (error.response && error.response.status !== 200) {
+            // 处理 403 错误
+            alert('请登录！');
+            this.$router.push({ path: '/' }); // 跳转到登录页面
+          } else {
+            console.error('Error interpreting cards:', error);
+          }
         });
+    },
+    logout() {
+      // 清除本地存储的 JWT token
+      localStorage.removeItem('token');
+      alert('已成功退出登录');
+      this.$router.push({ path: '/' }); // 跳转到登录页面
+    },
+    goToLogin() {
+      // 跳转到登录页面
+      this.$router.push({ path: '/' });
     }
   }
 }

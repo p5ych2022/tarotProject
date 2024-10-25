@@ -56,17 +56,18 @@ export default {
 
         // const response = await this.$axios.post("/user/login", formData, {
         const response = await this.$axios.post("http://127.0.0.1:55551/user/login", {
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json'
+           },
           nameOrEmail: this.nameOrEmail,
           password: this.password
         });
 
         // Handle successful login
-        if (response.data.token) {
-          localStorage.setItem('token', response.data.token); // Save the token locally
+        if (response.data) {
+          localStorage.setItem('token', response.data); // Save the token locally
           this.$router.push({ path: '/tarot' });
         } else {
-          this.errorMessage = response.data;
+          this.errorMessage = "登录失败，请检查您的用户名或密码";
         }
       } catch (error) {
         this.errorMessage = error.response.data.message || 'Login failed';

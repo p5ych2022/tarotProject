@@ -62,7 +62,11 @@
     },
     methods: {
       sendCode() {
-      this.$axios.post("/user/register/send-code", { email: this.email })
+      this.$axios.post("/user/register/send-code", { email: this.email }),{
+        headers: { 'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+           }
+      }
         .then(response => {
           this.errorMessage = "验证码已发送，请查收";
         })
