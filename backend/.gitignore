@@ -34,3 +34,6 @@ build/
 
 ### env ###
 .env
+
+### other ###
+/src/main/resources/application.yml
