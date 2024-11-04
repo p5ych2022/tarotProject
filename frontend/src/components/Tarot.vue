@@ -2,11 +2,13 @@
  <div class="tarot-page">
   <!-- 顶部导航栏 -->
   <div class="header">
-      <div class="login-buttons">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <div class="login-buttons">
         <button @click="goToLogin" class="login-button">登录</button>
         <button @click="logout" class="logout-button">退出登录</button>
       </div>
-    </div>
+  </div>
+
 
      <!-- Tabs -->
      <div class="tabs">
@@ -14,56 +16,58 @@
       <button @click="currentTab = 'sevenCards'" :class="{ active: currentTab === 'sevenCards' }">七牌阵</button>
       <button @click="currentTab = 'search-card'" :class="{ active: currentTab === 'search-card' }">解牌</button>
     </div>
-<!-- 三牌阵和七牌阵 -->
-<div v-if="currentTab === 'threeCards' || currentTab === 'sevenCards'">
-      <div class="message-input">
-        <input type="text" v-model="message" placeholder="请输入您的问题" />
-        <button @click="interpretCards">抽牌</button>
-      </div>
+    <div class="content">
+      <!-- 三牌阵和七牌阵 -->
+      <div v-if="currentTab === 'threeCards' || currentTab === 'sevenCards'">
+            <div class="message-input">
+              <input type="text" v-model="message" placeholder="请输入您的问题" />
+              <button @click="interpretCards">抽牌</button>
+            </div>
 
-      <div class="cards-display">
-        <div v-for="card in cards" :key="card.title" class="card">
-          <h5>{{ card.title }}</h5>
-          <p>{{ card.explain }}</p>
-          <!-- <div>
-            <strong>work: </strong>{{ card.work }}
-            <br>
-            <strong>love: </strong>{{ card.love }}
-            <br>
-            <strong>friend: </strong>{{ card.friend }}
-            <br>
-            <strong v-if="card.affection">affection: </strong><span v-if="card.affection">{{ card.affection }}</span>
-          </div> -->
-        </div>
-      </div>
+            <div class="cards-display">
+              <div v-for="card in cards" :key="card.title" class="card">
+                <h5>{{ card.title }}</h5>
+                <p>{{ card.explain }}</p>
+                <!-- <div>
+                  <strong>work: </strong>{{ card.work }}
+                  <br>
+                  <strong>love: </strong>{{ card.love }}
+                  <br>
+                  <strong>friend: </strong>{{ card.friend }}
+                  <br>
+                  <strong v-if="card.affection">affection: </strong><span v-if="card.affection">{{ card.affection }}</span>
+                </div> -->
+              </div>
+            </div>
 
-      <div class="tarot-response">
-        <textarea v-model="tarotResponse" placeholder="塔罗解读结果" readonly></textarea>
-      </div>
-    </div>
+            <div class="tarot-response">
+              <textarea v-model="tarotResponse" placeholder="塔罗解读结果" readonly></textarea>
+            </div>
+          </div>
 
-    <!-- 解牌 -->
-    <div v-if="currentTab === 'search-card'">
-      <div class="search-card">
-        <input type="text" v-model="searchQuery" placeholder="请输入您要搜索的塔罗牌" />
-        <button @click="searchCard">搜索</button>
-      </div>
+        <!-- 解牌 -->
+        <div v-if="currentTab === 'search-card'">
+          <div class="search-card">
+            <input type="text" class="search-input" v-model="searchQuery" placeholder="请输入您要搜索的塔罗牌" />
+            <button @click="searchCard">搜索</button>
+          </div>
 
-      <div class="cards-display">
-        <div v-for="card in filteredCards" :key="card.title" class="card">
-          <h5>{{ card.title }}</h5>
-          <p>{{ card.explain }}</p>
-          <div>
-            <strong>work: </strong>{{ card.work }}
-            <br>
-            <strong>love: </strong>{{ card.love }}
-            <br>
-            <strong>friend: </strong>{{ card.friend }}
-            <br>
-            <strong v-if="card.affection">affection: </strong><span v-if="card.affection">{{ card.affection }}</span>
+          <div class="cards-display">
+            <div v-for="card in filteredCards" :key="card.title" class="card">
+              <h5>{{ card.title }}</h5>
+              <p>{{ card.explain }}</p>
+              <!-- <div>
+                <strong>work: </strong>{{ card.work }}
+                <br>
+                <strong>love: </strong>{{ card.love }}
+                <br>
+                <strong>friend: </strong>{{ card.friend }}
+                <br>
+                <strong v-if="card.affection">affection: </strong><span v-if="card.affection">{{ card.affection }}</span>
+              </div> -->
+            </div>
           </div>
         </div>
-      </div>
     </div>
   </div>
 
@@ -850,41 +854,51 @@ export default {
     font-size: 12px;
 
   }
-    .tarot-page {
+  .tarot-page {
     display: flex;
     flex-direction: column;
     justify-content: center;
     min-height: 80vh; /* 让页面至少填满整个视口高度 */
     padding: 20px; /* 添加一些内边距 */
-    max-width: 1200px;
-    margin: -100px auto; /* 居中 */
-  }
-   .message-input input{
-
+    width: 100%; /* 修改为 100% */
+    margin: 0; /* 删除 -100px 的偏移，使页面内容不再居中，而是占满整个视口 */
+}
+   .message-input input {
     width: 100%;
-    padding: 16px;
-    margin-bottom: 20px;
-    height: 100px;
+
     }
 
     .search-card {
-      display: flex;
-      justify-content: center;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-   .cards-display .card {
-    border: 2px solid #3aff04;
+}
+
+.search-card input {
+  flex-grow: 1; /* 输入框占据剩余空间 */
+  padding: 10px;
+  font-size: 16px;
+}
+
+.search-card button {
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+
+   .content {
+    text-align: center;
     padding: 10px;
     margin-bottom: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 添加轻微的阴影效果 */
-    background-color: #fff;
+
   }
    .tarot-response textarea {
-    width: 100%;
-    justify-content: center;
-    flex-direction: column;
-    height: 400px;
-    padding: 10px;
+    width: 100%;/* 同时向右移动 10% */
+    display: flex;
+    flex-direction: column; /* 保持纵向排列 */
+    align-items: center; /* 子元素居中对齐 */
+    box-sizing: border-box;
   }
 
   /* 头部样式 */
@@ -939,5 +953,112 @@ export default {
   color: white;
 }
 
+/* 响应式设计 */
 
+/* 平板设备 - 屏幕宽度小于 1024px */
+@media (max-width: 1024px) {
+    .tarot-page {
+        padding: 15px;
+        margin: -80px auto;
+    }
+
+    .message-input input {
+
+        padding: 6px;
+    }
+
+    .tabs {
+        gap: 15px;
+    }
+
+    .cards-display  {
+        margin-bottom: 8px;
+    }
+
+    .logout-button,
+    .login-button {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .tarot-response textarea {
+        height: 300px;
+        padding: 8px;
+    }
+}
+
+/* 移动设备 - 屏幕宽度小于 800px */
+@media (max-width: 800px) {
+
+  .tarot-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80vh; /* 让页面至少填满整个视口高度 */
+    width: 100%; /* 修改为 100% */
+    margin: 0; /* 删除 -100px 的偏移，使页面内容不再居中，而是占满整个视口 */
+}
+
+
+
+.tarot-response textarea {
+    width: 150%; /* 设置宽度为父容器宽度的 120%，根据需求可调整 */
+    margin-left: -25%; /* 向左移动 10% 的宽度，确保其超出父容器的边界 */
+    margin-right: -25%; /* 同时向右移动 10% */
+    display: flex;
+    flex-direction: column; /* 保持纵向排列 */
+    align-items: center; /* 子元素居中对齐 */
+    box-sizing: border-box;
+  }
+    .tabs {
+        /* flex-direction: column; */
+        width: 100%;
+    }
+
+
+
+
+    .content{
+      width: 100%;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .search-card {
+      display: flex;
+      flex-direction: column; /* 改为纵向排列 */
+      align-items: stretch;   /* 子元素拉伸适应父容器宽度 */
+    }
+
+    .search-card input,
+    .search-card button {
+      width: 100%;          /* 子元素宽度占满父容器 */
+
+    }
+
+    .cards-display {
+    width: 150%; /* 设置宽度为父容器宽度的 120%，根据需求可调整 */
+    margin-left: -25%; /* 向左移动 10% 的宽度，确保其超出父容器的边界 */
+    margin-right: -25%; /* 同时向右移动 10% */
+    display: flex;
+    flex-direction: column; /* 保持纵向排列 */
+    align-items: center; /* 子元素居中对齐 */
+    margin-top: 20px; /* 添加顶部的间距，方便与上面的元素区分 */
+    box-sizing: border-box; /* 确保边距和内边距也包括在宽度计算中 */
+}
+
+
+    .logout-button,
+    .login-button {
+        font-size: 12px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: center;
+        margin: 0px 0;
+    }
+
+
+  }
 </style>
