@@ -1,6 +1,6 @@
 package com.tarot.tarot.DTO;
 
-public class ResetPasswordREquestDto {
+public class ResetPasswordRequestDto {
     private String email;
     private String newPassword;
     private String code;

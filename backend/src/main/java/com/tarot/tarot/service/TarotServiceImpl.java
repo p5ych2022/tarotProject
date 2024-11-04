@@ -116,4 +116,17 @@ public class TarotServiceImpl implements TarotService {
 
         return deck.subList(0, 3);
     }
+
+    public List<TarotCard> drawSevenCards() {
+        List<TarotCard> deck = new ArrayList<>(cards.values());
+        // Collections.shuffle(deck);
+        SecureRandom random = new SecureRandom();
+        Collections.shuffle(deck, random);
+
+//        System.out.println("Deck size: " + deck.size());
+//        deck.forEach(card -> System.out.println(card));
+
+
+        return deck.subList(0,7);
+    }
 }

@@ -4,4 +4,7 @@ import com.tarot.tarot.model.TarotCard;
 import java.util.List;
 public interface TarotService {
     List<TarotCard> drawThreeCards();
+
+    List<TarotCard> drawSevenCards();
 }
+

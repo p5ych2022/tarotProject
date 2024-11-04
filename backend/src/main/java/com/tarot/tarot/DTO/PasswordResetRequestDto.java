@@ -3,7 +3,7 @@ package com.tarot.tarot.DTO;
 public class PasswordResetRequestDto {
     private String email;
     private String newPassword;
-    private String code;
+    private String code;   // 邮箱验证码
 
     public String getEmail() {
         return email;

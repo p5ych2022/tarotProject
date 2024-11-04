@@ -15,8 +15,13 @@ public class  TarotController {
     @Autowired
     private TarotService tarotService;
 
-    @GetMapping("/draw")
-    public List<TarotCard> drawThreeCards() {
-        return tarotService.drawThreeCards();
-    }
+//    @GetMapping("/drawThreeCards")
+//    public List<TarotCard> drawThreeCards() {
+//        return tarotService.drawThreeCards();
+//    }
+//
+//    @GetMapping("/drawSevenCards")
+//    public List<TarotCard> drawSevenCards() {
+//        return tarotService.drawSevenCards();
+//    }
 }
