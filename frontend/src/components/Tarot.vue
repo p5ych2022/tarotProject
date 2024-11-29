@@ -14,9 +14,13 @@
         <button @click="currentTab = 'threeCards'" :class="{ active: currentTab === 'threeCards' }">三牌阵</button>
         <button @click="currentTab = 'sevenCards'" :class="{ active: currentTab === 'sevenCards' }">七牌阵</button>
         <button @click="currentTab = 'riyun'" :class="{ active: currentTab === 'riyun' }">日运</button>
+        <button @click="currentTab = 'easy-riyun'" :class="{ active: currentTab === 'easy-riyun' }">日运 - 简易版</button>
         <button @click="currentTab = 'zhouyun'" :class="{ active: currentTab === 'zhouyun' }">周运</button>
         <button @click="currentTab = 'yueyun'" :class="{ active: currentTab === 'yueyun' }">月运</button>
+        <button @click="currentTab = 'nianyun'" :class="{ active: currentTab === 'nianyun' }">年运</button>
+        <button @click="currentTab = 'jiepai3'" :class="{ active: currentTab === 'jiepai3' }">解牌 - 三牌阵</button>
         <button @click="currentTab = 'search-card'" :class="{ active: currentTab === 'search-card' }">搜牌</button>
+
     </div>
     <div class="content">
         <!-- 三牌阵和七牌阵 -->
@@ -31,7 +35,7 @@
                 <div v-for="card in cards" :key="card.title" class="card">
                     <h5>{{ card.title }}</h5>
                     <p>{{ card.keywords }}</p>
-                    <p v-html="card.explaination.replace(/\n/g, '<br><br>')" class="left-align"></p>
+                    <p v-html="card.explaination.replace(/\n/g, '<br>')" class="left-align"></p>
                 </div>
             </div>
 
@@ -42,13 +46,13 @@
             <div v-if="tarotResponse" class="tarot-response-card">
                 <div class="card">
                     <h5>塔罗解读结果</h5>
-                    <p v-html="tarotResponse.replace(/\n/g, '<br><br>')" class="left-align"></p>
+                    <p v-html="tarotResponse.replace(/\n/g, '<br>')" class="left-align"></p>
                 </div>
             </div>
         </div>
 
         <!-- 日运 周运 月运-->
-        <div v-if="currentTab === 'riyun' || currentTab === 'zhouyun' || currentTab === 'yueyun'">
+        <div v-if="currentTab === 'riyun' || currentTab === 'easy-riyun' || currentTab === 'zhouyun' || currentTab === 'yueyun' || currentTab === 'nianyun'">
             <div class="message-input">
                 <button @click="interpretCards">抽牌</button>
             </div>
@@ -92,9 +96,94 @@
             </div>
           </div>
         </div>
-    </div>
-  </div>
 
+        <div v-if="currentTab === 'jiepai3'">
+          <div class="jiepai3">
+            <div class="jiepai-section">
+                <div class="message-input">
+                    <input type="text" v-model="jiepaiQuestion" placeholder="请输入您的问题" />
+                </div>
+                <div class="card-selection">
+                    <label>选择第一张牌：</label>
+                    <div class="dropdown-group">
+                    <select v-model="selectedGroup1" @change="updateFilteredCards(1)">
+                        <option disabled value="">选择牌组</option>
+                        <option value="majorArcana">大阿尔卡那</option>
+                        <option value="cups">圣杯牌组</option>
+                        <option value="wands">权杖牌组</option>
+                        <option value="pentacles">星币牌组</option>
+                        <option value="swords">宝剑牌组</option>
+                    </select>
+                    <select v-model="selectedCard1" v-if="filteredCards1.length">
+                        <option disabled value="">选择具体牌</option>
+                        <option v-for="card in filteredCards1" :key="card.title" :value="card.title">{{ card.title }}</option>
+                    </select>
+                    </div>
+
+                    <label>选择第二张牌：</label>
+                    <div class="dropdown-group">
+                    <select v-model="selectedGroup2" @change="updateFilteredCards(2)">
+                        <option disabled value="">选择牌组</option>
+                        <option value="majorArcana">大阿尔卡那</option>
+                        <option value="cups">圣杯牌组</option>
+                        <option value="wands">权杖牌组</option>
+                        <option value="pentacles">星币牌组</option>
+                        <option value="swords">宝剑牌组</option>
+                    </select>
+                    <select v-model="selectedCard2" v-if="filteredCards2.length">
+                        <option disabled value="">选择具体牌</option>
+                        <option v-for="card in filteredCards2" :key="card.title" :value="card.title">{{ card.title }}</option>
+                    </select>
+                    </div>
+
+                    <label>选择第三张牌：</label>
+                    <div class="dropdown-group">
+                    <select v-model="selectedGroup3" @change="updateFilteredCards(3)">
+                        <option disabled value="">选择牌组</option>
+                        <option value="majorArcana">大阿尔卡那</option>
+                        <option value="cups">圣杯牌组</option>
+                        <option value="wands">权杖牌组</option>
+                        <option value="pentacles">星币牌组</option>
+                        <option value="swords">宝剑牌组</option>
+                    </select>
+                    <select v-model="selectedCard3" v-if="filteredCards3.length">
+                        <option disabled value="">选择具体牌</option>
+                        <option v-for="card in filteredCards3" :key="card.title" :value="card.title">{{ card.title }}</option>
+                    </select>
+                    </div>
+                </div>
+
+                <button @click="jiepai">解牌</button>
+
+            </div>
+
+            <!-- Loading text -->
+            <div v-if="loading" class="loading-text">Loading ...</div>
+
+                <!-- 解牌结果展示 -->
+                <!-- <div v-if="tarotResponse" class="tarot-response-card">
+                    <div class="card">
+                        <h5>塔罗解读结果</h5>
+                        <p v-html="tarotResponse.replace(/\n/g, '<br>')" class="left-align"></p>
+                    </div>
+                </div> -->
+                <div class="cards-display">
+                <div v-for="card in cards" :key="card.title" class="card">
+                    <h5>{{ card.title }}</h5>
+                    <p>{{ card.keywords }}</p>
+                    <p v-html="card.explaination.replace(/\n/g, '<br>')" class="left-align"></p>
+                </div>
+            </div>
+            <div v-if="tarotResponse" class="tarot-response-card">
+                <div class="card">
+                    <h5>塔罗解读结果</h5>
+                    <p v-html="tarotResponse.replace(/\n/g, '<br>')" class="left-align"></p>
+                </div>
+            </div>
+            </div>
+    </div>
+</div>
+</div>
 </template>
 
 <script>
@@ -109,6 +198,16 @@ export default {
       searchQuery: '', // 用于搜索的输入框绑定数据
       filteredCards: [],
       loading: false,
+      filteredCards1: [],
+      filteredCards2: [],
+      filteredCards3: [],
+      selectedGroup1: '',
+      selectedGroup2: '',
+      selectedGroup3: '',
+      selectedCard1: '',
+      selectedCard2: '',
+      selectedCard3: '',
+      jiepaiQuestion: '',
       tarotCards:{
     "1": {
         "title": "The Fool 愚人-正位",
@@ -1048,6 +1147,7 @@ export default {
     }
 
 }
+
     };
   },
   methods: {
@@ -1067,11 +1167,17 @@ export default {
         case 'riyun':
             endpoint = '/zhipu/tarot-riyun';
             break;
+        case 'easy-riyun':
+            endpoint = '/zhipu/tarot-riyun';
+            break;
         case 'zhouyun':
             endpoint = '/zhipu/tarot-zhouyun';
             break;
         case 'yueyun':
             endpoint = '/zhipu/tarot-yueyun';
+            break;
+        case 'nianyun':
+            endpoint = '/zhipu/tarot-nianyun';
             break;
         }
 
@@ -1103,6 +1209,67 @@ export default {
             } else {
             console.error('Error interpreting cards:', error);
             }
+        });
+    },
+
+    updateFilteredCards(selectNumber) {
+      let group = '';
+      if (selectNumber === 1) group = this.selectedGroup1;
+      if (selectNumber === 2) group = this.selectedGroup2;
+      if (selectNumber === 3) group = this.selectedGroup3;
+
+      let filtered = [];
+      if (group === "majorArcana") {
+        filtered = Object.values(this.tarotCards).slice(0, 44);
+      } else if (group === "cups") {
+        filtered = Object.values(this.tarotCards).slice(45, 72);
+      } else if (group === "wands") {
+        filtered = Object.values(this.tarotCards).slice(73, 99);
+      } else if (group === "pentacles") {
+        filtered = Object.values(this.tarotCards).slice(100, 128);
+      } else if (group === "swords") {
+        filtered = Object.values(this.tarotCards).slice(128, 156);
+      }
+
+      if (selectNumber === 1) this.filteredCards1 = filtered;
+      if (selectNumber === 2) this.filteredCards2 = filtered;
+      if (selectNumber === 3) this.filteredCards3 = filtered;
+    },
+    jiepai() {
+      this.loading = true; // 开始请求时设置 loading 为 true
+
+      // 验证是否选择了三张牌和输入了问题
+      if (!this.selectedCard1 || !this.selectedCard2 || !this.selectedCard3 || !this.jiepaiQuestion) {
+        alert("请填写完整的解牌信息！");
+        this.loading = false;
+        return;
+      }
+
+      // 准备要发送的数据
+      const payload = {
+        message: this.jiepaiQuestion,
+        cards: [this.selectedCard1, this.selectedCard2, this.selectedCard3],
+      };
+
+      // 向后端发送解牌请求
+      this.$axios.post('/zhipu/tarot-jiepai', payload, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+        .then(response => {
+          this.tarotResponse = response.data.interpretation;
+          this.cards = response.data.tarotCards;
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+          if (error.response && error.response.status === 403) {
+            alert('请登录！');
+            this.$router.push({ path: '/' }); // 跳转到登录页面
+          } else {
+            console.error('Error interpreting cards:', error);
+          }
         });
     },
 
@@ -1248,6 +1415,42 @@ export default {
     text-align: left;
   }
 
+  .jiepai-section {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .card-selection {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dropdown-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .loading-text {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .tarot-response-card .card {
+    border: 2px solid #7da472;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: #fff;
+  }
 
 /* 响应式设计 */
 

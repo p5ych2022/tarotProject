@@ -16,7 +16,7 @@ import java.security.SecureRandom;
 
 @Service
 public class TarotServiceImpl implements TarotService {
-    private static final Map<Integer, TarotCard> cards = new ConcurrentHashMap<>();
+    public static final Map<Integer, TarotCard> cards = new ConcurrentHashMap<>();
 
     static {
         // init cards

@@ -23,6 +23,6 @@ public class ZhipuAiChatModelConfig {
 
 
 
-            return new ZhipuAiChatModel(null, apiKey, 0.0, 0.70, null, null, 3, 2048, null, null, null);
+            return new ZhipuAiChatModel(null, apiKey, 0.0, 0.92, null, null, 3, 10240, null, null, null);
     }
 }

@@ -47,7 +47,7 @@ public class TarotCard {
     @Override
     public String toString() {
         // return "TarotCard{title='" + title + "', keywords='" + keywords + "',  description='" + description +  "', explaination='" + explaination + "}";
-        return "TarotCard{title='" + title + "', keywords='" + keywords + "'explaination='" + explaination + "}";
+        return "TarotCard{title='" + title + "', keywords='" + keywords + "}";
 
     }
 
