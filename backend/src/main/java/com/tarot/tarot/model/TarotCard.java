@@ -2,76 +2,58 @@ package com.tarot.tarot.model;
 
 public class TarotCard {
     private String title;
-    private String explain;
-    private int negative;
-    private String work;
-    private String love;
-    private String friend;
-    private String affection;
+    private String keywords;
+    private String description;
+    private String explaination;
 
     public TarotCard() {
     }
 
-//    public TarotCard(String name, String orientation, String description) {
-//        this.title = title;
-//        this.explain = explain;
-//        this.negative = negative;
-//        this.work = work;
-//        this.love = love;
-//        this.friend = friend;
-//        this.affection = affection;
-//    }
+
 
     public String getTitle() {
         return title;
     }
-    public String getExplain() {
-        return explain;
-    }
-    public int getnegative() {
-        return negative;
+
+    public String getKeywords() {
+        return keywords;
     }
 
-    public String getWork() {
-        return work;
+    public String getDescription() {
+        return description;
     }
 
-    public String getLove() {
-        return love;
-    }
-
-    public String getFriend() {
-        return friend;
-    }
-
-    public String getAffection() {
-        return affection;
+    public String getExplaination() {
+        return explaination;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
-    public void setExplain(String explain) {
-        this.explain = explain;
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
     }
-    public void setNegative(int negative) {
-        this.negative = negative;
+
+    public void setDescription(String description) {
+        this.description = description;
     }
-    public void setWork(String work) {
-        this.work = work;
+
+    public void setExplaination(String explaination) {
+        this.explaination = explaination;
     }
-    public void setLove(String love) {
-        this.love = love;
-    }
-    public void setFriend(String friend) {
-        this.friend = friend;
-    }
-    public void setAffection(String affection) {
-        this.affection = affection;
-    }
+
 
     @Override
     public String toString() {
-        return "TarotCard{title='" + title + "', explain='" + explain + "', work='" + work + "', love='" + love + "', friend='" + friend + "', affection='" + affection + "'}";
+        // return "TarotCard{title='" + title + "', keywords='" + keywords + "',  description='" + description +  "', explaination='" + explaination + "}";
+        return "TarotCard{title='" + title + "', keywords='" + keywords + "}";
+
     }
+
+
+
+//    public String toString_zhipu() {
+//        return "TarotCard{title='" + title + "', keywords='" + keywords + "'explaination='" + explaination + "}";
+//    }
 }
