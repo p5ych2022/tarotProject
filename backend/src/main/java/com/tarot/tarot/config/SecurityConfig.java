@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080")); // 允许前端地址
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:55552",  "http://43.138.65.118:55552"));// 允许前端地址
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 允许的方法
         configuration.setAllowedHeaders(Arrays.asList("*")); // 允许所有请求头
         configuration.setAllowCredentials(true); // 允许凭证（如 Cookies 等）

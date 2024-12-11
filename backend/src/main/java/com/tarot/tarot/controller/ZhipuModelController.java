@@ -21,7 +21,7 @@ import static com.tarot.tarot.service.TarotServiceImpl.cards;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = {"http://127.0.0.1:55552", "http://43.138.65.118:55552"})
 public class ZhipuModelController {
     @Autowired
     private ZhipuAiChatModel zhipuAiChatModel;
@@ -139,10 +139,10 @@ public class ZhipuModelController {
                     ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，为缘主解读塔罗结果
                     ## Skills: 精通塔罗解读，尤其是塔罗日运阵，按序抽出三张牌，三张牌分别代表(1.主牌，代表今天的主运势；2.重点牌，代表今天可能会发生的一些重要事情；3.建议牌，代表今天的建议。)
                     ## Workflow:
-                        抽出第一张牌，代表主牌，代表今天的主运势；为缘主解读今日主要的运势。重点关注恋爱、工作、学业、健康这四方面。
+                        抽出第一张牌，代表主牌，代表今天的主运势；为缘主解读今日主要的运势。重点关注财富、恋爱、工作、学业、健康这四方面。
                         抽出第二张牌，代表重点牌，代表今天可能会发生的一些重要事情；为缘主解读今日可能会发生的一些重要事情。
-                        抽出第三张牌，代表建议牌，代表今天的建议；为缘主解读今日的建议，也是从恋爱、工作、学业、健康这四方面去给建议。
-                   ## Output format: 结合缘主给出的文本，以及传入的 Tarot Cards 信息。作出清晰、准确、专业的塔罗解读。请你务必先根据我给你的 workflow 上面的步骤，对传入的三张塔罗牌的含义进行解读。具体做法为，根据日运塔罗阵法，三张牌分别代表：1.主牌，代表今天的主运势；2.重点牌，代表今天可能会发生的一些重要事情；3.建议牌，代表今天的建议。那么对于每一张牌，首先你要根据它原来的含义，作出一定解释，然后结合它是第几张牌，进行进一步详细解读，以告诉缘主今日恋爱、工作、学业、健康的一个情况，这里你的每一方面我希望都能说一千字左右，也就是说完每张牌原来的含义解释后，接详细解释，详细解释中有一千字的恋爱，一千字的工作，一千字的事/学业，一千字的健康情况，尽量详细！最后，根据三张牌的解读，综合对缘主进行解答，字数也需要大约一千字左右。注意，你的所有解读中，应当重点关注的是对每一张牌的解读部分。解释尽量详细一点。
+                        抽出第三张牌，代表建议牌，代表今天的建议；为缘主解读今日的建议，也是从财富、恋爱、工作、学业、健康这四方面去给建议。
+                   ## Output format: 结合缘主给出的文本，以及传入的 Tarot Cards 信息。作出清晰、准确、专业的塔罗解读。请你务必先根据我给你的 workflow 上面的步骤，对传入的三张塔罗牌的含义进行解读。具体做法为，根据日运塔罗阵法，三张牌分别代表：1.主牌，代表今天的主运势；2.重点牌，代表今天可能会发生的一些重要事情；3.建议牌，代表今天的建议。那么对于每一张牌，首先你要根据它原来的含义，作出一定解释，然后结合它是第几张牌，进行进一步详细解读，以告诉缘主今日财富、恋爱、工作、学业、健康的一个情况，这里你的每一方面我希望都能说五百字左右，也就是说完每张牌原来的含义解释后，接详细解释，详细解释中有五百字的恋爱，五百字的财富情况，五百字的工作情况，五百字的事/学业情况，五百字的健康情况，尽量详细！最后，根据三张牌的解读，综合对缘主进行解答，字数也需要大约五百字左右。注意，你的所有解读中，应当重点关注的是对每一张牌的解读部分。解释尽量详细一点，以及你在回答时不应提及五百字这个要求。
                     """;
         String tarotCardsInfo = tarotCards.toString();
 
@@ -196,23 +196,36 @@ public class ZhipuModelController {
         List<TarotCard> tarotCards;
 
         try {
-            tarotCards = tarotService.drawCards(4);
+            tarotCards = tarotService.drawCards(3);
         } catch (Exception e) {
             tarotCards = defaultTarotCards;
         }
 
+//        String prompttemplate = """
+//                                ## Role: 塔罗牌咨询师
+//                                ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，为缘主解读塔罗结果。
+//                                ## Skills: 精通塔罗解读，尤其是塔罗周运阵，按序抽出四张牌，四张牌中的前三张代表了下周的一个整体运势，第四张牌代表了下周的整体指引和建议牌。)
+//                                ## Workflow:
+//                                    a. 抽出前三张牌，然后依次通过这三张牌的塔罗含义对缘主的财运、感情、事业(学业)、健康情况进行解读，这里指的是对每一个方面的情况进行解读时都需要同时考虑这三张牌，而不是一张牌对应一个方面。注意由于缘主的身份和状况可能存在各种情况，你需要分类进行解读。
+//                                    	1. 当讨论财运的时候你可以不用分类直接进行说明，解说字数需要 500 字。
+//                                    	2. 当谈论感情的时候你需要分别讨论单身的朋友和已经有伴侣的朋友两种情况，每种情况的解说分别需要 500 字；
+//                                    	3. 当谈论事业或学业时你需要分别讨论还在上学的朋友(谈论学业)和已经工作的朋友(谈论事业)，每种情况的解说分别需要 500 字；
+//                                    	4. 当讨论健康的时候你可以不用分类直接进行说明，解说字数需要 500 字。
+//                                    b. 抽出第四张牌，根据对前三张牌的解读以及第四张牌的含义对缘主的财运、感情、事业(学业)、健康情况给出合理建议。字数需要 500 字。
+//                                ## Output format: 结合缘主给出的文本，以及传入的 Tarot Cards 信息。作出清晰、准确、专业的塔罗解读。请你务必先根据我给你的 workflow 上面的步骤，结合塔罗的含义进行解读。具体做法为，根据周运塔罗阵法，对前三张牌，分别按照我规定的顺序和字数限制进行分类(财运、感情、事/学业、健康)解读，注意每一个分类下你要对人群进行分类并分开解读；对最后一张牌，你再给出下周的整体指引和建议牌。注意，你的所有解读中，应当重点关注的是对每一张牌的解读部分。
+//                """;
+
         String prompttemplate = """
-                                ## Role: 塔罗牌咨询师
-                                ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，为缘主解读塔罗结果。
-                                ## Skills: 精通塔罗解读，尤其是塔罗周运阵，按序抽出四张牌，四张牌中的前三张代表了下周的一个整体运势，第四张牌代表了下周的整体指引和建议牌。)
-                                ## Workflow:
-                                    a. 抽出前三张牌，然后依次通过这三张牌的塔罗含义对缘主的财运、感情、事业(学业)、健康情况进行解读。注意由于缘主的身份和状况可能存在各种情况，你需要分类进行解读。
-                                    	1. 当讨论财运的时候你可以不用分类直接进行说明，解说字数需要 500 字。
-                                    	2. 当谈论感情的时候你需要分别讨论单身的朋友和已经有伴侣的朋友两种情况，每种情况的解说分别需要 500 字；
-                                    	3. 当谈论事业或学业时你需要分别讨论还在上学的朋友(谈论学业)和已经工作的朋友(谈论事业)，每种情况的解说分别需要 500 字；
-                                    	4. 当讨论健康的时候你可以不用分类直接进行说明，解说字数需要 500 字。
-                                    b. 抽出第四张牌，根据对前三张牌的解读以及第四张牌的含义对缘主的财运、感情、事业(学业)、健康情况给出合理建议。字数需要 500 字。
-                                ## Output format: 结合缘主给出的文本，以及传入的 Tarot Cards 信息。作出清晰、准确、专业的塔罗解读。请你务必先根据我给你的 workflow 上面的步骤，结合塔罗的含义进行解读。具体做法为，根据周运塔罗阵法，对前三张牌，分别按照我规定的顺序和字数限制进行分类(财运、感情、事/学业、健康)解读，注意每一个分类下你要对人群进行分类并分开解读；对最后一张牌，你再给出下周的整体指引和建议牌。注意，你的所有解读中，应当重点关注的是对每一张牌的解读部分。
+                ## Role: 塔罗牌咨询师
+                ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，为缘主解读塔罗结果。
+                ## Skills: 精通塔罗解读，尤其是塔罗周运阵，按序抽出三张牌，代表了下周的一个整体运势。
+                ## Workflow:
+                    a. 抽出前三张牌，然后通过这三张牌的塔罗含义对缘主的财运、感情、事业(学业)、健康情况进行解读，这里指的是对每一个方面的情况进行解读时都需要同时考虑这三张牌，而不是一张牌。注意由于缘主的身份和状况可能存在各种情况，你需要分类进行解读。
+                        1. 当讨论财运的时候你可以不用分类直接进行说明，解说字数需要 500 字。
+                        2. 当谈论感情的时候你需要分别讨论单身的朋友和已经有伴侣的朋友两种情况，每种情况的解说分别需要 500 字；
+                        3. 当谈论事业或学业时你需要分别讨论还在上学的朋友(谈论学业)和已经工作的朋友(谈论事业)，每种情况的解说分别需要 500 字；
+                        4. 当讨论健康的时候你可以不用分类直接进行说明，解说字数需要 500 字。
+                ## Output format: 结合缘主给出的文本，以及传入的 Tarot Cards 信息。作出清晰、准确、专业的塔罗解读。请你务必先根据我给你的 workflow 上面的步骤，结合塔罗的含义进行解读。具体做法为，根据周运塔罗阵法，对这三张牌，分别按照我规定的顺序和字数限制进行分类(财运、感情、事/学业、健康)解读，注意每一个分类下你要对人群进行分类并分开解读。注意，你的所有解读中，应当重点关注的是对每一张牌的解读部分。同时你解说时不应该出现五百字等字数提示。
                 """;
 
         String tarotCardsInfo = tarotCards.toString();
@@ -363,6 +376,838 @@ public class ZhipuModelController {
         return ResponseEntity.ok(tarotResponse);
     }
 
+
+    //你和ta接下来的感情发展
+    @GetMapping("/zhipu/tarot/01")
+    public ResponseEntity<TarotResponse> tarot01(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+                ## Role: 塔罗牌咨询师 \s
+                ## Goals: 根据缘主给出的基本信息，结合三张塔罗牌结果，为缘主解读你和“TA”接下来的感情发展，通过三牌阵“时间之流”解析过去、现在和未来的感情状况及趋势。 \s
+                ## Skills: 精通塔罗解读，尤其擅长分析三牌阵排列的时间关系，结合每张牌的位置解析感情问题的发展历程和未来走向。 \s
+                ## Workflow: \s
+                    1. **抽出第一张牌**，代表过去，揭示过去在这段感情中发生的重要事件、影响因素及其对现在的关系的作用；为缘主解析过去的情感动态及它对当下的意义。 \s
+                    2. **抽出第二张牌**，代表现在，描述你和“TA”目前的感情状态，双方的情感能量、现阶段的课题与影响关系发展的关键点。 \s
+                    3. **抽出第三张牌**，代表未来，预示你和“TA”感情可能的发展趋势，未来关系中的重要动态和需要注意的转折或机会。 \s
+                ## Output Format: \s
+                结合传入的 Tarot Cards 信息，作出清晰、准确、专业的塔罗解读。 \s
+                具体做法为： \s
+                    - **过去牌**：揭示过去在感情中的关键点及对当下的作用。 \s
+                    - **现在牌**：解析当前的感情状态及双方的情感课题。 \s
+                    - **未来牌**：预测感情可能的发展趋势及需要注意的重点。 \s
+                对于每一张牌： \s
+                    1. 结合牌意详细解析它的含义。 \s
+                    2. 结合牌在阵列中的位置（过去、现在或未来），进一步分析它对感情发展的特殊意义。 \s
+                    3. 提供缘主对这段感情的建议与指导，帮助缘主更好地理解和应对这段关系。 \s
+                最后，综合三张牌的解读，为缘主总结分析这段感情的发展脉络以及未来可能的走向，提供指导性的建议。 \s
+                    """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //离开你后ta后悔了吗
+    @GetMapping("/zhipu/tarot/02")
+    public ResponseEntity<TarotResponse> tarot02(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+                ## Role: 塔罗牌咨询师 \s
+                ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“离开时，TA是否后悔”这一问题，探讨TA的心理状态及对离开的态度。 \s
+                ## Skills: 精通塔罗解读，擅长通过二择牌阵探讨对立情感或行为，深入分析情感心理动态，尤其是“是否后悔”类问题的解答。 \s
+                ## Workflow: \s
+                    1. **抽出第一张牌**，代表TA离开时的主要心理动机，揭示TA为何做出离开的决定，以及当时的情感能量。 \s
+                    2. **抽出第二张牌**，代表TA离开后可能的感受，重点关注“后悔”或“释然”的情绪，解析TA的真实内心变化。 \s
+                    3. **（可选）抽出第三张牌**，补充说明TA未来可能的态度或行动趋势，帮助缘主更全面地了解这段关系的可能走向。 \s
+                
+                ## Output Format: \s
+                    结合传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                    具体做法为： \s
+                        1. **第一张牌**：解析TA离开时的主要心理动机，揭示当时的情感状态和决定依据。 \s
+                        2. **第二张牌**：分析TA离开后内心的真实感受，重点探讨是否后悔或满足，以及此情感的具体表现形式。 \s
+                        3. **（可选）第三张牌**：补充说明TA未来可能对这段关系的态度或可能的情感动态。 \s
+                    最后，根据两到三张牌的解读，综合分析TA在离开时的心理和内心情感，得出对“是否后悔”的倾向性解读，为缘主提供情感指导或建议。 \s
+                    """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //谁在偷偷喜欢你
+    @GetMapping("/zhipu/tarot/03")
+    public ResponseEntity<TarotResponse> tarot03(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+                   ## Role: 塔罗牌咨询师 \s
+                   ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“谁在偷偷喜欢你”这一问题，揭示对方的情感状态、可能的身份特征，以及缘主如何识别这份隐藏的情感。 \s
+                   ## Skills: 精通塔罗解读，擅长通过三张牌解析人际关系和隐藏情感，帮助缘主发现未知的情感动态并提供实用建议。 \s
+                   ## Workflow: \s
+                       1. **抽出第一张牌**，代表对方的情感状态，揭示对方的情感深度和性质（暗恋、欣赏、倾慕等）。 \s
+                       2. **抽出第二张牌**，代表对方的身份线索或特征，分析对方可能的外在表现、性格特质或与你生活的交集。 \s
+                       3. **抽出第三张牌**，代表缘主如何识别并处理这份隐藏的情感，提供实用的建议，帮助缘主更好地察觉和应对。 \s
+                   ## Output Format: \s
+                   结合传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                   具体做法为： \s
+                       - **第一张牌**：解析对方的情感状态，揭示TA对缘主的真实情感及深度。 \s
+                       - **第二张牌**：提供关于对方身份或性格的线索，帮助缘主更好地识别这个人。 \s
+                       - **第三张牌**：分析缘主如何识别和处理这份隐藏的情感，给出具体的建议。 \s
+                   最后，综合三张牌的解读，帮助缘主发现隐藏在生活中的情感，并提供温暖且实用的建议，以便缘主更好地面对这段关系的可能性。 \s
+                     """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //在异性眼中你是什么样的人
+    @GetMapping("/zhipu/tarot/04")
+    public ResponseEntity<TarotResponse> tarot04(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+              ## Role: 塔罗牌咨询师 \s
+              ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“在异性眼中你是什么样的”这一问题，全面分析异性对缘主的整体印象、吸引力来源以及他们的期待。 \s
+              ## Skills: 精通塔罗解读，擅长通过三张牌解析个人魅力与人际关系，帮助缘主了解自身在他人眼中的形象与吸引力。 \s
+              ## Workflow: \s
+                  1. **抽出第一张牌**，代表异性对缘主的整体印象，揭示他们如何看待缘主的外在形象、性格或气质。 \s
+                  2. **抽出第二张牌**，代表缘主吸引异性的核心特质，解析他们认为最具吸引力的地方（外貌、性格、能力等）。 \s
+                  3. **抽出第三张牌**，代表异性对缘主的期待或渴望，探讨他们可能希望与你建立的关系或互动方式。 \s
+              ## Output Format: \s
+                  结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                  具体做法为： \s
+                      - **第一张牌**：解读异性对缘主的整体印象，包括外在和内在的综合形象。 \s
+                      - **第二张牌**：揭示异性最为欣赏或被吸引的特质，分析这种吸引力的来源和表现形式。 \s
+                      - **第三张牌**：解析异性对缘主可能的期待或渴望，提供对未来关系可能性的洞察。 \s
+                  最后，综合三张牌的解读，为缘主总结异性眼中自己的整体形象与吸引力特质，同时提供有价值的建议，帮助缘主更好地展现自己的魅力。 \s
+                     """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //年前你能脱单吗
+    @GetMapping("/zhipu/tarot/05")
+    public ResponseEntity<TarotResponse> tarot05(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+              ## Role: 塔罗牌咨询师 \s
+              ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“在异性眼中你是什么样的”这一问题，全面分析异性对缘主的整体印象、吸引力来源以及他们的期待。 \s
+              ## Skills: 精通塔罗解读，擅长通过三张牌解析个人魅力与人际关系，帮助缘主了解自身在他人眼中的形象与吸引力。 \s
+              ## Workflow: \s
+                  1. **抽出第一张牌**，代表异性对缘主的整体印象，揭示他们如何看待缘主的外在形象、性格或气质。 \s
+                  2. **抽出第二张牌**，代表缘主吸引异性的核心特质，解析他们认为最具吸引力的地方（外貌、性格、能力等）。 \s
+                  3. **抽出第三张牌**，代表异性对缘主的期待或渴望，探讨他们可能希望与你建立的关系或互动方式。 \s
+              ## Output Format: \s
+                  结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                  具体做法为： \s
+                      - **第一张牌**：解读异性对缘主的整体印象，包括外在和内在的综合形象。 \s
+                      - **第二张牌**：揭示异性最为欣赏或被吸引的特质，分析这种吸引力的来源和表现形式。 \s
+                      - **第三张牌**：解析异性对缘主可能的期待或渴望，提供对未来关系可能性的洞察。 \s
+                  最后，综合三张牌的解读，为缘主总结异性眼中自己的整体形象与吸引力特质，同时提供有价值的建议，帮助缘主更好地展现自己的魅力。 \s
+                     """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //下一次恋爱会是什么样的
+    @GetMapping("/zhipu/tarot/06")
+    public ResponseEntity<TarotResponse> tarot06(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+              ## Role: 塔罗牌咨询师 \s
+              ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“下一次恋爱会是什么样的”这一问题，从整体特质、缘主的角色及未来走向三个方面进行解析。 \s
+              ## Skills: 精通塔罗解读，擅长通过三张牌解析未来感情模式，为缘主提供关于未来恋情的洞察与建议。 \s
+              ## Workflow: \s
+                  1. **抽出第一张牌**，代表下一次恋爱的整体特质，揭示未来恋情的感情基调（如热烈、平和、挑战等）。 \s
+                  2. **抽出第二张牌**，代表缘主在恋爱中的角色或表现，分析你在这段关系中可能的状态和情感投入。 \s
+                  3. **抽出第三张牌**，代表恋情的未来走向或可能的结果，揭示这段关系的潜力和发展趋势。 \s
+              ## Output Format: \s
+              结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+              具体做法为： \s
+                  - **第一张牌**：解读未来恋爱的整体特质，描述这段恋情可能的氛围和主要特征。 \s
+                  - **第二张牌**：解析缘主在恋爱中的角色或表现，分析你在关系中的情感倾向或行为模式。 \s
+                  - **第三张牌**：揭示恋情的未来走向或可能的结果，为缘主提供对这段恋情的期待与注意事项。 \s
+              最后，综合三张牌的解读，为缘主总结未来恋爱的可能特征，提供温暖且实用的建议，帮助缘主为未来的感情做好准备。 \s
+                       """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //你和ta缘尽了吗
+    @GetMapping("/zhipu/tarot/07")
+    public ResponseEntity<TarotResponse> tarot07(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+                ## Role: 塔罗牌咨询师 \s
+                ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“你和TA缘尽了吗”这一问题，分析当前关系的状态、影响缘分的关键因素，以及未来可能的结局。 \s
+                ## Skills: 精通塔罗解读，擅长通过三张牌解析关系现状及未来可能，为缘主提供关于感情走向的清晰洞察与建议。 \s
+                ## Workflow: \s
+                    1. **抽出第一张牌**，代表你和TA关系的现状，揭示你们当前的情感状态与彼此的联结情况。 \s
+                    2. **抽出第二张牌**，代表影响你们关系的关键因素，分析阻碍或推动关系发展的主要原因（内在或外在）。 \s
+                    3. **抽出第三张牌**，代表关系未来的可能结局，揭示缘分是否会结束，或是否还有可能继续。 \s
+                ## Output Format: \s
+                结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                具体做法为： \s
+                    - **第一张牌**：解析当前关系的核心状态，描述双方的情感联结、距离或隔阂。 \s
+                    - **第二张牌**：分析影响关系发展的关键因素，指出导致关系进展或停滞的主要原因。 \s
+                    - **第三张牌**：揭示关系未来的可能结局，为缘主提供关于缘分是否终结的启示和建议。 \s
+                最后，综合三张牌的解读，为缘主总结这段关系的未来可能性，提供温暖且务实的建议，帮助缘主理解当前感情的状态及潜在的选择。 \s
+                         """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //下一任是什么样的人
+    @GetMapping("/zhipu/tarot/08")
+    public ResponseEntity<TarotResponse> tarot08(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+                ## Role: 塔罗牌咨询师 \s
+                ## Goals: 根据缘主给出的基本信息，结合塔罗牌态，提供对TA当前处境的线索（如职业、兴趣、社交状态等）。 \s
+                    - **第三张牌**：详细揭示你们关系可能的互动结果，解读“下一任是什么样的人”这一问题，分析未来恋人的性格特质、生活状态以及你们可能的关系模式。 \s
+                  ## Skills: 精通塔罗解读，擅长通过三张牌描绘未来恋人的整体特征，帮助缘主获得对未来感情的清晰预期与理解。 \s
+                  ## Workflow: \s
+                      1. **抽出第一张牌**，代表下一任恋人的性格特质，解析对方的内在性格、情感模式以及心理能量。 \s
+                      2. **抽出第二张牌**，代表下一任恋人的外在生活状态，揭示TA的职业、兴趣爱好、生活环境或当前处境。 \s
+                      3. **抽出第三张牌**，代表你们关系的互动模式，分析你们可能的情感动态以及未来发展的潜力。 \s
+                  ## Output Format: \s
+                  结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                  具体做法为： \s
+                      - **第一张牌**：详细解读下一任恋人的性格特质和情感模式，描述TA的个性特点。 \s
+                      - **第二张牌**：详细分析下一任的外在生活状模式和感情发展方向，描述这段关系可能的基调。 \s
+                最后，综合三张牌的解读，为缘主总结下一任恋人的特质与关系发展，提供温暖且实用的建议，帮助缘主为未来的恋情做好准备。 \s
+                           """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //未来一个月会有什么好消息
+    @GetMapping("/zhipu/tarot/09")
+    public ResponseEntity<TarotResponse> tarot09(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+              ## Role: 塔罗牌咨询师 \s
+              ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“未来一个月会有什么好消息”这一问题，分析可能出现的积极事件、机会的来源及如何更好地迎接它们。 \s
+              ## Skills: 精通塔罗解读，擅长通过三张牌揭示未来潜在的好运与机遇，为缘主提供关于积极变化的洞察与建议。 \s
+              ## Workflow: \s
+                  1. **抽出第一张牌**，代表未来可能出现的好消息或积极变化，揭示未来一个月可能发生的令人期待的事情。 \s
+                  2. **抽出第二张牌**，代表好消息的来源或推动因素，分析积极变化背后的原因或影响力。 \s
+                  3. **抽出第三张牌**，代表如何抓住机会或迎接好消息，提供缘主实际的行动指引和建议。 \s
+              ## Output Format: \s
+                  结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                  具体做法为： \s
+                      - **第一张牌**：解析未来可能的好消息或积极变化，描述其内容与可能性。 \s
+                      - **第二张牌**：分析好消息的来源或推动因素，揭示积极事件的成因或关键人物/机会。 \s
+                      - **第三张牌**：提供缘主如何抓住机会或更好地迎接这些好消息的建议。 \s
+                  最后，综合三张牌的解读，为缘主总结未来一个月可能的好消息，并提出切实可行的指导，帮助缘主充分把握好运的到来。 \s
+                         """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //最近事业上会有什么好消息
+    @GetMapping("/zhipu/tarot/10")
+    public ResponseEntity<TarotResponse> tarot10(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+               ## Role: 塔罗牌咨询师 \s
+               ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“最近事业上会有什么好消息”这一问题，分析当前的事业状态、未来的好消息来源及如何抓住机遇提升事业运势。 \s
+               ## Skills: 精通塔罗解读，擅长通过三张牌揭示事业发展与机遇，为缘主提供关于职业方向的清晰洞察与建议。 \s
+               ## Workflow: \s
+                   1. **抽出第一张牌**，代表当前事业状态及能量，解析缘主目前的事业环境、动力和机会潜力。 \s
+                   2. **抽出第二张牌**，代表未来可能的好消息或机遇，揭示未来近期事业中值得期待的变化或成果。 \s
+                   3. **抽出第三张牌**，代表如何抓住机会或提升事业运势，提供切实的行动建议或注意事项。 \s
+               ## Output Format: \s
+                   结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                   具体做法为： \s
+                       - **第一张牌**：解析当前事业状态，揭示缘主目前的职业环境与能量。 \s
+                       - **第二张牌**：分析未来可能的事业好消息或机遇，指出具体方向或领域。 \s
+                       - **第三张牌**：提供缘主在事业中如何抓住机遇或提升运势的建议，帮助缘主更好地行动。 \s
+                   最后，综合三张牌的解读，为缘主总结最近事业上的好消息，并提出切实可行的指导，帮助缘主更好地迎接事业上的积极变化。 \s
+                           """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //最近学业上会有什么好消息
+    @GetMapping("/zhipu/tarot/11")
+    public ResponseEntity<TarotResponse> tarot11(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+               ## Role: 塔罗牌咨询师 \s
+               ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“最近学业上会有什么好消息”这一问题，分析当前学业状态、可能的好消息或突破点，以及如何更好地迎接学业上的机会。 \s
+               ## Skills: 精通塔罗解读，擅长通过三张牌解析学业相关问题，帮助缘主发现学业中的积极能量并提供切实建议。 \s
+               ## Workflow: \s
+                   1. **抽出第一张牌**，代表当前学业状态和能量，揭示缘主目前在学业上的整体情况和努力方向。 \s
+                   2. **抽出第二张牌**，代表学业上的好消息或突破点，解析最近可能出现的积极变化或进步的契机。 \s
+                   3. **抽出第三张牌**，代表如何抓住好消息或促进学业上的进步，为缘主提供切实可行的建议。 \s
+               ## Output Format: \s
+                   结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                   具体做法为： \s
+                       - **第一张牌**：解析当前学业状态，描述缘主在学业中的努力和现状。 \s
+                       - **第二张牌**：揭示学业上的好消息或突破点，分析缘主可能取得的进展或收获的成就。 \s
+                       - **第三张牌**：提供如何抓住学业上的好消息或促进进步的建议，帮助缘主更好地把握机会。 \s
+                   最后，综合三张牌的解读，为缘主总结最近学业上的好消息，并提出实用的指导，帮助缘主在学业上获得更大的成就。 \s
+                               """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //你正在焦虑的事情会怎样发展
+    @GetMapping("/zhipu/tarot/12")
+    public ResponseEntity<TarotResponse> tarot12(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+                ## Role: 塔罗牌咨询师 \s
+                ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“你正在焦虑的事情会怎样发展”这一问题，分析问题的现状、未来可能的趋势，以及缓解焦虑或推动积极变化的建议。 \s
+                ## Skills: 精通塔罗解读，擅长通过三张牌解析问题状态、发展趋势和解决方案，为缘主提供清晰的方向和务实的建议。 \s
+                ## Workflow: \s
+                    1. **抽出第一张牌**，代表当前问题的核心状态，揭示问题的关键点或焦虑的主要来源。 \s
+                    2. **抽出第二张牌**，代表问题的发展趋势或可能的结果，分析问题未来的动态和可能的结局。 \s
+                    3. **抽出第三张牌**，代表缓解焦虑或推动积极发展的建议，提供具体的行动方向或心态调整的提示。 \s
+                ## Output Format: \s
+                    结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                    具体做法为： \s
+                        - **第一张牌**：解析当前问题的核心状态，描述问题的关键点或焦虑的来源。 \s
+                        - **第二张牌**：分析问题未来的发展趋势或可能的结果，揭示缘主可以期待的动态或变化。 \s
+                        - **第三张牌**：提供缓解焦虑或推动问题积极发展的建议，为缘主指引解决问题的实际方法或内心调整的方向。 \s
+                    最后，综合三张牌的解读，为缘主总结问题的整体发展，并提供务实的建议，帮助缘主以更清晰和积极的态度面对焦虑的事情。 \s
+                                """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //你的宠物想对你说什么
+    @GetMapping("/zhipu/tarot/13")
+    public ResponseEntity<TarotResponse> tarot13(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+               ## Role: 塔罗牌咨询师 \s
+               ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“你的宠物想对你说什么”这一问题，分析宠物当前的状态、对主人的感受，以及它可能想表达的需求或心愿。 \s
+               ## Skills: 精通塔罗解读，擅长通过三张牌解析宠物与主人的情感联结，帮助缘主更好地理解宠物的内在世界与需求。 \s
+               ## Workflow: \s
+                   1. **抽出第一张牌**，代表宠物当前的情绪或状态，揭示宠物目前的心理能量或生活状况。 \s
+                   2. **抽出第二张牌**，代表宠物对主人的感受或想法，解析宠物与主人之间的关系动态和情感联结。 \s
+                   3. **抽出第三张牌**，代表宠物的需求或想表达的心愿，揭示它对生活环境、陪伴或其他方面的期待。 \s
+               ## Output Format: \s
+                   结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                   具体做法为： \s
+                       - **第一张牌**：解析宠物当前的情绪或状态，描述它在生活中的感受和能量状况。 \s
+                       - **第二张牌**：分析宠物对主人的感受或想法，揭示它对主人的依赖、感情或互动中的期望。 \s
+                       - **第三张牌**：揭示宠物的需求或心愿，提供关于宠物照料、陪伴或环境调整的建议。 \s
+                   最后，综合三张牌的解读，为缘主总结宠物当前的心声，提供实用的建议，帮助缘主与宠物建立更深的联结。 \s
+                                """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //分开后ta有想你吗
+    @GetMapping("/zhipu/tarot/14")
+    public ResponseEntity<TarotResponse> tarot14(){
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(3);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+             ## Role: 塔罗牌咨询师 \s
+             ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读“分开后TA有想你吗”这一问题，分析分开后对方的情绪状态、对缘主的思念程度以及未来可能的情感动态。 \s
+             ## Skills: 精通塔罗解读，擅长通过三张牌解析分离后的情感问题，帮助缘主了解对方的真实感受和可能的情感趋势。 \s
+             ## Workflow: \s
+                 1. **抽出第一张牌**，代表TA分开后的情绪状态，揭示TA内心的情感变化及分开后对生活的适应情况。 \s
+                 2. **抽出第二张牌**，代表TA对缘主的思念程度或感受，解析分开后对方内心是否牵挂、怀念缘主的存在。 \s
+                 3. **抽出第三张牌**，代表未来的情感动态或可能的发展，揭示TA在未来可能采取的情感行动或态度转变。 \s
+             ## Output Format: \s
+                 结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                 具体做法为： \s
+                     - **第一张牌**：解析TA分开后的情绪状态，描述对方在分开后的心理能量和生活状态。 \s
+                     - **第二张牌**：分析TA对缘主的思念程度或感受，揭示分开后对方是否怀念或牵挂缘主。 \s
+                     - **第三张牌**：揭示未来的情感动态或可能的发展，提供对双方关系的潜在走向的提示。 \s
+                 最后，综合三张牌的解读，为缘主总结分开后TA的情感状态和可能的情感发展方向，提供温暖的洞察和实际的指引。 \s
+                                 """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
+
+    //视奸牌阵
+//    @GetMapping("/zhipu/tarot/15")
+//    public ResponseEntity<TarotResponse> tarot15(){
+//        List<TarotCard> tarotCards;
+//
+//        try {
+//            tarotCards = tarotService.drawCards(5);
+//        } catch (Exception e) {
+//            tarotCards = defaultTarotCards;
+//        }
+//
+//        String prompttemplate = """
+//                 ## Role: 塔罗牌咨询师 \s
+//                 ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读前任的现状和内心状态，包括感情状况、财务状况、对缘主的看法、是否怀念以及是否后悔分手。 \s
+//                 ## Skills: 精通塔罗解读，擅长通过五张牌解析多层次的人际与情感问题，帮助缘主了解前任的现状与情感动态。 \s
+//                 ## Workflow: \s
+//                     1. **抽出第一张牌**，代表对方目前的感情状况，解析对方是否在新恋情中、感情状态是否稳定。 \s
+//                     2. **抽出第二张牌**，代表对方目前的财务状况，分析对方在经济上是否稳定或面临压力。 \s
+//                     3. **抽出第三张牌**，代表对方目前对缘主的看法，揭示对方对缘主的印象或感情态度。 \s
+//                     4. **抽出第四张牌**，代表离开之后对方是否想起过缘主，分析对方对这段关系的怀念程度。 \s
+//                     5. **抽出第五张牌**，代表对方是否后悔和缘主分手，解析对方的内心情感和后悔的可能性。 \s
+//                 ## Output Format: \s
+//                     结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+//                     具体做法为： \s
+//                         - **第一张牌**：解析对方目前的感情状况，描述其在感情领域的现状和动态。 \s
+//                         - **第二张牌**：分析对方目前的财务状况，揭示其经济状态的稳定性或困境。 \s
+//                         - **第三张牌**：揭示对方对缘主的看法，包括对缘主的感情态度和印象变化。 \s
+//                         - **第四张牌**：解析对方离开后是否想起过缘主，揭示其怀念程度或情感波动。 \s
+//                         - **第五张牌**：分析对方是否后悔分手，提供对其内心反思的洞察。 \s
+//                     最后，综合五张牌的解读，为缘主总结前任的现状与情感状态，提供洞察和建议，帮助缘主更清晰地了解对方的动态。\s
+//                                     """;
+//        String tarotCardsInfo = tarotCards.toString();
+//
+//        String combinedMessage = prompttemplate + tarotCardsInfo;
+//        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+//
+//        Response<AiMessage> response = zhipuAiChatModel.generate(userMessage);
+//
+//        TarotResponse tarotResponse = new TarotResponse(tarotCards, response.content().text());
+//
+//        return ResponseEntity.ok(tarotResponse);
+//    }
+
+    // 下一任是什么样的人
+    @GetMapping("/zhipu/tarot/15")
+    public ResponseEntity<TarotResponse> tarot15() {
+        List<TarotCard> tarotCards;
+
+        try {
+            tarotCards = tarotService.drawCards(5);
+        } catch (Exception e) {
+            tarotCards = defaultTarotCards;
+        }
+
+        String prompttemplate = """
+                 ## Role: 塔罗牌咨询师 \s
+                 ## Goals: 根据缘主给出的基本信息，结合塔罗牌结果，解读前任的现状和内心状态，包括感情状况、财务状况、对缘主的看法、是否怀念以及是否后悔分手。 \s
+                 ## Skills: 精通塔罗解读，擅长通过五张牌解析多层次的人际与情感问题，帮助缘主了解前任的现状与情感动态。 \s
+                 ## Workflow: \s
+                     1. **抽出第一张牌**，代表对方目前的感情状况，解析对方是否在新恋情中、感情状态是否稳定。 \s
+                     2. **抽出第二张牌**，代表对方目前的财务状况，分析对方在经济上是否稳定或面临压力。 \s
+                     3. **抽出第三张牌**，代表对方目前对缘主的看法，揭示对方对缘主的印象或感情态度。 \s
+                     4. **抽出第四张牌**，代表离开之后对方是否想起过缘主，分析对方对这段关系的怀念程度。 \s
+                     5. **抽出第五张牌**，代表对方是否后悔和缘主分手，解析对方的内心情感和后悔的可能性。 \s
+                 ## Output Format: \s
+                     结合缘主提供的文本信息，以及传入的 Tarot Cards 信息，作出清晰、准确的塔罗解读。 \s
+                     具体做法为： \s
+                         - **第一张牌**：解析对方目前的感情状况，描述其在感情领域的现状和动态。 \s
+                         - **第二张牌**：分析对方目前的财务状况，揭示其经济状态的稳定性或困境。 \s
+                         - **第三张牌**：揭示对方对缘主的看法，包括对缘主的感情态度和印象变化。 \s
+                         - **第四张牌**：解析对方离开后是否想起过缘主，揭示其怀念程度或情感波动。 \s
+                         - **第五张牌**：分析对方是否后悔分手，提供对其内心反思的洞察。 \s
+                     最后，综合五张牌的解读，为缘主总结前任的现状与情感状态，提供洞察和建议，帮助缘主更清晰地了解对方的动态。\s
+                                     """;
+        String tarotCardsInfo = tarotCards.toString();
+
+        String combinedMessage = prompttemplate + tarotCardsInfo;
+        UserMessage userMessage = UserMessage.userMessage(combinedMessage);
+
+        Response<AiMessage> response01 = zhipuAiChatModel.generate(userMessage);
+
+        String firstStageResult = response01.content().text();
+
+        String secondStagePrompt = """
+            ## Role: 塔罗牌咨询师 
+            ## Goals: 在上一阶段解读基础上，将解读内容综合进一步解析和提高，出一份给出全面情感解析和举措建议。 字数需要和上一阶段的解读结果相仿。
+            ## Input: 
+              上一阶段解读结果：
+            """ + firstStageResult;
+        UserMessage secondUserMessage = UserMessage.userMessage(secondStagePrompt);
+
+        Response<AiMessage> secondResponse = zhipuAiChatModel.generate(secondUserMessage);
+        String finalComprehensiveResult =firstStageResult +  secondResponse.content().text();
+
+        TarotResponse tarotResponse = new TarotResponse(tarotCards, finalComprehensiveResult);
+
+        return ResponseEntity.ok(tarotResponse);
+    }
 
 }
 

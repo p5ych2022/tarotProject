@@ -10,7 +10,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // This will allow any endpoint to be accessed from any origin
-                .allowedOrigins("http://localhost:8080")  // You can specify the Vue app's URL here
+                .allowedOrigins("http://127.0.0.1:55552")
+                .allowedOrigins("http://43.138.65.118:55552")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

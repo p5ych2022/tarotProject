@@ -21,6 +21,26 @@
         <button @click="currentTab = 'jiepai3'" :class="{ active: currentTab === 'jiepai3' }">解牌 - 三牌阵</button>
         <button @click="currentTab = 'search-card'" :class="{ active: currentTab === 'search-card' }">搜牌</button>
 
+        <button v-for="tab in additionalTabs" :key="tab.id" @click="currentTab = tab.id" :class="{ active: currentTab === tab.id }">
+        {{ tab.name }}
+       </button>
+        <!-- <button @click="currentTab = '01'" :class="{ active: currentTab === '01' }">你和ta接下来的感情发展</button>
+        <button @click="currentTab = '02'" :class="{ active: currentTab === '02' }">离开你后ta后悔了吗</button>
+        <button @click="currentTab = '03'" :class="{ active: currentTab === '03' }">谁在偷偷喜欢你</button>
+        <button @click="currentTab = '04'" :class="{ active: currentTab === '04' }">在异性眼中你是什么样的</button>
+        <button @click="currentTab = '05'" :class="{ active: currentTab === '05' }">年前你能脱单吗</button>
+        <button @click="currentTab = '06'" :class="{ active: currentTab === '06' }">下一次恋爱会是什么样的</button>
+        <button @click="currentTab = '07'" :class="{ active: currentTab === '07' }">你和ta缘尽了吗</button>
+        <button @click="currentTab = '08'" :class="{ active: currentTab === '08' }">下一任是什么样的人</button>
+        <button @click="currentTab = '09'" :class="{ active: currentTab === '09' }">未来一个月会有什么好消息</button>
+        <button @click="currentTab = '10'" :class="{ active: currentTab === '10' }">最近事业上会有什么好消息</button>
+        <button @click="currentTab = '11'" :class="{ active: currentTab === '11' }">最近学业上会有什么好消息</button>
+        <button @click="currentTab = '12'" :class="{ active: currentTab === '12' }">你正在焦虑的事情会怎样发展</button>
+        <button @click="currentTab = '13'" :class="{ active: currentTab === '13' }">你的宠物想对你说什么</button>
+        <button @click="currentTab = '14'" :class="{ active: currentTab === '14' }">分开后ta有想你吗</button>
+        <button @click="currentTab = '15'" :class="{ active: currentTab === '15' }">视奸牌阵</button> -->
+
+
     </div>
     <div class="content">
         <!-- 三牌阵和七牌阵 -->
@@ -78,6 +98,34 @@
                 </div>
             </div>
         </div>
+
+        <!-- 十五问-->
+        <!-- Content for all tabs -->
+    <!-- Content shared by all tabs -->
+    <div v-if="currentTab === '01' || currentTab === '02' || currentTab === '03' || currentTab === '04' || currentTab === '05' || currentTab === '06' || currentTab === '07' || currentTab === '08' || currentTab === '09' || currentTab === '10' || currentTab === '11' || currentTab === '12' || currentTab === '13' || currentTab === '14' || currentTab === '15'">
+        <div class="message-input">
+            <button @click="interpretCards">抽牌</button>
+        </div>
+
+        <!-- Loading text -->
+        <div v-if="loading" class="loading-text">Loading ...</div>
+
+        <div class="cards-display">
+            <div v-for="card in cards" :key="card.title" class="card">
+                <h5>{{ card.title }}</h5>
+                <p>{{ card.keywords }}</p>
+                <p v-html="card.explaination.replace(/\n/g, '<br>')" class="left-align"></p>
+            </div>
+        </div>
+
+        <div v-if="tarotResponse" class="tarot-response-card">
+            <div class="card">
+                <h5>塔罗解读结果</h5>
+                <p v-html="tarotResponse.replace(/\n/g, '<br>')" class="left-align"></p>
+            </div>
+        </div>
+    </div>
+
 
         <!-- 搜牌 -->
         <div v-if="currentTab === 'search-card'">
@@ -208,6 +256,23 @@ export default {
       selectedCard2: '',
       selectedCard3: '',
       jiepaiQuestion: '',
+      additionalTabs: [
+        { id: '01', name: '你和ta接下来的感情发展' },
+        { id: '02', name: '离开你后ta后悔了吗' },
+        { id: '03', name: '谁在偷偷喜欢你' },
+        { id: '04', name: '在异性眼中你是什么样的' },
+        { id: '05', name: '年前你能脱单吗' },
+        { id: '06', name: '下一次恋爱会是什么样的' },
+        { id: '07', name: '你和ta缘尽了吗' },
+        { id: '08', name: '下一任是什么样的人' },
+        { id: '09', name: '未来一个月会有什么好消息' },
+        { id: '10', name: '最近事业上会有什么好消息' },
+        { id: '11', name: '最近学业上会有什么好消息' },
+        { id: '12', name: '你正在焦虑的事情会怎样发展' },
+        { id: '13', name: '你的宠物想对你说什么' },
+        { id: '14', name: '分开后ta有想你吗' },
+        { id: '15', name: '视奸牌阵' }
+      ],
       tarotCards:{
     "1": {
         "title": "The Fool 愚人-正位",
@@ -863,6 +928,12 @@ export default {
         "description": "冰天雪地中，两个乞丐蹒跚前行，又瘸又驼背，身上的衣服破烂不堪。他们经过一间教堂，金碧辉煌的五枚金币，就高挂在教堂的窗扉上，里面是平安而受到庇护的世界，象征物质与精神庇护的教堂，他们却视而不见，并没有被这光明和温暖所吸引，也没停留的意念，挺着饥饿且疲惫的身躯，径自赶路。\n画面左方的男人，左脚受了伤裹了起来，杵着柺杖疲累地的走着。画面右方的是一位女子，裹在红色的布下瑟缩着。两人都衣衫褴褛，同样拖着疲惫的脚步走着。他们或许是一对的，无论面对如何险恶的环境，还是互相陪伴在一起，扶持着对方，增添一些温暖，但却无暇依偎。\n由于场景是漆黑的夜晚，还弥漫着风雪，教堂的建筑和外墙并不清晰，然而这扇明亮璀璨的窗户，明显而清楚的呈现出来，是一种典型教堂专用的竖绞链窗。这座教堂的门并没有打开，甚至没有呈现出来，这是一座关闭稍歇的教堂。\n这张牌预示了在物质方面的麻烦，图案上就画出了贫困的景况，对于金钱而言非常不利，代表财务遇到难关。针对财务的占卜，就代表金钱的损失，决策的失败和错误。\n下雪的世界，是寒冷无情的，也象征精神的贫瘠与情感的寒冷。路旁教堂金碧辉煌的一扇窗，透露出温暖的光芒，两位落魄的人仍然无法得到接济，这扇窗户里面虽是温暖的世界，但是并不属于他们。他们连门都找不到，无法走进这个相隔绝的、截然不同的世界。虽然只是一道窗户，进去了就可以改变，得到物质或精神的救助，然而那个世界与他们是隔绝的。\n另外，画面营造了两个人物，是为了暗示小俩口互相陪伴扶持，强调与感情的依存。可以代表情感，恋情和对象，也表示任何良好深厚的关系，相处上也很相投与和谐。在问感情的时候，这张牌是有条件下的有益。这张牌同时是「患难见真情」，以及「贫贱夫妻百事哀」。",
         "explaination": "星币五画着两个饥寒交迫，而且疲累不堪的人。其中一人的身体状况很差，这表示他长期以来的辛劳。在他们后面有一扇教堂的窗户，为他们在物质世界中提供了精神上的选择。它意味他们身体状况的根本原因，就是精神上的空虚。\n他们可以选择如何去发现、跟随及落实精神之路。教堂其实只是他们的一种选择。它代表把精神价值介绍给那些无意去追求的人。在五这张牌中，这些人没有看见它，因此丧失了一个改变的机会。\n虽然他们在一起，但感到孤单，当你精神无比空虚时，你就会强烈感受到内在的饥渴、寂寞和孤立感。在某种程度上你变得和人生疏离。这张牌上面位于人后面的教堂象征他们内心的圣堂。只要你让某个人、或某件事，阻挡在你和上帝或你的精神泉源之间，你就是在冒着迷失方向的危险。\n星币五代表的是分离。它是一种对分离或孤独状态的认知，即使你是出于群体之中而非指是身体上和一个人或某种状况分开。有时候当你处于一群心灵无法相通的人之间时，可能会比你独处的时候更加感到孤独。\n外在悲惨是内在悲惨的一种反映，所以当星币五出现时，你需要接受生命提供给你的改变机会。“如果你想改变这个世界，请先改变你自己”是这张牌的答案。\n另外一个伟特本人提到的涵义，星币五也代表爱情，特别是处于艰困情境中依旧心心相印的爱侣，因为这两个乞丐在贫困中相互扶持依靠，虽然贫贱夫妻百事哀，他们仍不离弃对方。\n星币五出现，显示某方面的欠缺，可能是缺乏精神支持，可能是没有财务支援，可能是资讯或知识不足，也可能是没有贵人相助。再仔细看图面，我们可以发现教堂有窗却没有门，这是个很值得思考的问题：是乞丐忽略了门的存在吗？还是其实他们看见了，却自己拒绝进入？或者是教堂根本没有门？教堂理应是个温暖的处所，提供人们精神上的支持，但这两个乞丐却无缘得到，其原因值得深究。\n如果是第一项假设，我们可以说其实有支援，是当事人没去找，或根本没注意到。如果是第二项，也许有人愿意帮助他，他却自己拒绝了。第三项假设，表示当事人求援被拒，或者根本没有帮助的来源。从这个议题，我们可以发现，塔罗牌的牌义可以是很丰富，很自由发挥的。\n虽然教堂的窗户显示了这是一个避难之处，但牌里面的男人和女人正饱受寒冷之苦，也因为不断的争吵和彼此孤立，并自觉生命的恩赐而感到疲惫不堪。严寒的气候、病弱的身躯，还有财务上的窘迫，强迫这对夫妇做改变，而他们却是毫无准备。\n星币牌是一张代表饥饿的牌，不论是精神上或财务上。当这张牌出现在牌形当中，代表你的生活负担很沉重。可能是你被解雇了，并感觉到北社会放逐，或者也可能在暗示你正在为自己以及家人的基本温饱而奋斗。\n两性关系上的意义，星币五暗示你和伴侣的分离，而且无论你们是分开，或者仍在一起，你都是孤独而寂寞的。这种关系现实的是心灵空虚的症状，你的饥渴已经到了一种没有任何肉体或情感关系能够喂饱你的程度了。这张牌暗示或许是到了你重新认识自己真正的人生目标的适当时候了。为了平息你的饥渴，内在的改变是需要的。\n生活上的意义，出现这张牌代表身体出现状况。隐藏在身体症状之下的通常是精神上和情绪上的空虚，使得身体越来越没办法去承受。星币五可能意指你的生活状态正在影响你的赚钱能力，或许你会因为身体不好而被解雇。\n就整体观点来看，星币五说的是财务上的困难、贫穷、疾病和内在的寂寞。在不断的挣扎当中，你很容易窄化你对问题的焦点，而忽略了你的机会。\n当这张星币五出现时，深度的心灵改变是有其需要的，否则虽然有外在的助力，可能还是解决不了你的问题。你目前的人生观并非你的支柱，而现在你必须问自己，是否仍愿意保有这些信念。\n星币五代表心灵空虚所反映出的身体征兆。在事业分析上，它意味着事业或对工作不感兴趣；并且暗示由于你的态度一直不变，所以情况也一如往昔。\n我曾经和一个女人共事过，她痛恨每一分、每一秒的上班时间，工作时总是游来荡去。当我建议她辞职，找一份更适合的工作时，她回答：“才不呢，我再过十二年就可以退休了。”她把自己置于一种毫无选择的情况下，使她变得十分凄惨。\n财务上的意义，星币五显示出财务窘境、贫穷或一次严重的财务损失。若是询问一桩生意或一项财务方案的话，并不建议你朝着设定的方向走，当詹姆士来作分析时，他正在考虑是否接受自愿离职。因为已经有人愿意加入一家新成立的公司，他也感觉到这似乎是放手一搏的好时机，但是他在目前的职位上可说是得心应手，他想要问的是如果继续在旧公司多待两年是不是明智之举？答案正是星币五。这暗示着现在现在似乎是一项不会令他后悔的改变。所以他拿了遣散费，而三个月后他之前的公司就进入破产管理状态，很多还在那里工作的人都丧失了他们应有的权利以及工作。"
     },
+    "110": {
+        "title": "星币五 逆位",
+        "keywords": "复苏、改变、不和、混乱、恢复",
+        "description": "伟特的书中写道：逆位置的星币五代表「不协调、混乱、毁灭、不和、放荡」。也许在逆位置时，这两位乞丐的命运将更加多舛，因为教堂在下方，更加隐而未见了。\n另一种解释则是从逆境中艰困求生，化险为夷。至于如何判断当事人的命运是更加凄惨还是逢凶化吉，则视牌阵中其他的牌或当下直觉而定，但当事人也必须为自己的命运负担责任，才能尽最大的努力，得到最佳的结果。\n无论如何，再艰难的时光总会过去，当它过去，一切都雨过天青了。正如同这两位乞丐，即使再难熬，他们仍坚持活下去。黑暗中曙光仍会出现。",
+        "explaination": "逆位的星币五代表财务的状况有了好转，从艰困的状态中开始回复了。整个环境有所改变和复苏，温度回升了许多，也不再下着大雪。两人的状况当然也好转了，至少克服了这场风雪，得到抚慰与帮助。历经过磨难和彼此间相依为命，这时候的内心是一种平安与幸存感，宁静的喘息时刻。\n这张牌的逆位，代表事务上有新的动向，面临新的契机和重新起步。不过风雨後仍是一片混乱与繁杂，必须要重新整顿。已经毁损和殆尽资源必须从头开始，仍需要面对现实收拾残局。\n然而，人与人之间的关系方面，情感、爱情与婚姻，也面临新阶段的问题，处于修复的阶段，或是回归现实的庸碌而忽略感情，总是有一些要克服的隔阂需要去拉近彼此。\n它可以说是从一个人或一种状况的束缚中解放出来，因为你让改变发生了。所有塔罗牌五的逆位都属于改变的牌，并且你认识到目前处理某种状况的方式，并不是唯一的方式，这确保你会愿意改变。生命不必是静止不动的。你可以改变，而且当你改变内心深处，生命将会改变它在表面上所提供给你的东西。\n冬天已经渐渐远离，现在机会和方法又出现了。这个改变宣告着你又回到正位星币四的状态，它给了你储备金钱的机会，并且享受着物质财富所提供的舒适感。它提供你利用财富过着舒适生活的机会。经历一段财务艰苦的时期后，现在你终于能够比较自由的运用金钱了，这让你有机会偿还债务或为一个有价值的目标而储蓄。塔罗牌里的“五”代表改变，而逆位的星币五所形容的是财务环境的改善，并且带来更多的选择和生活形态的改进。\n五在塔罗牌当中代表的是改变。而且当这些牌正位的时候，都有着心胸狭窄的意思；而逆位时则代表心胸宽大。人生当中唯一可以确定的就是，所有的事情都会改变。改变是好或坏，对或错，端赖你的观点。\n财务上的意义，当星币逆位意味着最严峻的财务寒冬已经过去了，而且财务环境的改善似乎是有谱了。有时候它是暗指你可能正要从某个让你入不敷出的生意或是投资中撤退。\n生活上的意义，此时最坏的生活状态已经远离你了。假如你愿意敞开心胸接受的话，你周遭的人随时都可以提供你支援。当生活的牌形中出现星币逆位时，请先充实你的情绪和心灵，这将有助你享受美好的生活。"
+    },
     "111": {
         "title": "星币六 正位",
         "keywords": "慈善、慷慨、理财、施与受、宽大",
@@ -1157,29 +1228,24 @@ export default {
         let endpoint = '';
 
         // 根据 currentTab 的值选择相应的接口
-        switch (this.currentTab) {
-        case 'threeCards':
-            endpoint = '/zhipu/tarot-three-cards';
-            break;
-        case 'sevenCards':
-            endpoint = '/zhipu/tarot-seven-cards';
-            break;
-        case 'riyun':
-            endpoint = '/zhipu/tarot-riyun';
-            break;
-        case 'easy-riyun':
-            endpoint = '/zhipu/tarot-riyun';
-            break;
-        case 'zhouyun':
-            endpoint = '/zhipu/tarot-zhouyun';
-            break;
-        case 'yueyun':
-            endpoint = '/zhipu/tarot-yueyun';
-            break;
-        case 'nianyun':
-            endpoint = '/zhipu/tarot-nianyun';
-            break;
-        }
+      if (this.currentTab === 'threeCards') {
+        endpoint = '/zhipu/tarot-three-cards';
+      } else if (this.currentTab === 'sevenCards') {
+        endpoint = '/zhipu/tarot-seven-cards';
+      } else if (this.currentTab === 'riyun' || this.currentTab === 'easy-riyun') {
+        endpoint = '/zhipu/tarot-riyun';
+      }else if(this.currentTab === 'easy-riyun'){
+        endpoint = '/zhipu/tarot-easy-riyun';
+      }else if (this.currentTab === 'zhouyun') {
+        endpoint = '/zhipu/tarot-zhouyun';
+      } else if (this.currentTab === 'yueyun') {
+        endpoint = '/zhipu/tarot-yueyun';
+      } else if (this.currentTab === 'nianyun') {
+        endpoint = '/zhipu/tarot-nianyun';
+      } else {
+        // 对于动态生成的额外 tab，直接构造接口
+        endpoint = `/zhipu/tarot/${this.currentTab}`;
+      }
 
         // 设置请求参数和头部
         const config = {

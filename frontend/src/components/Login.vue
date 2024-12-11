@@ -55,7 +55,7 @@ export default {
         formData.append("password", this.password);
 
         // const response = await this.$axios.post("/user/login", formData, {
-        const response = await this.$axios.post("http://127.0.0.1:55551/user/login", {
+        const response = await this.$axios.post("/user/login", {
           headers: { 'Content-Type': 'application/json'
            },
           nameOrEmail: this.nameOrEmail,
