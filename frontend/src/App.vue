@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style>
-@import "@/../../assets/css/paper.css";
+/* @import "@/../../assets/css/paper.css"; */
   *{
     padding:10px;
     margin:10px;
