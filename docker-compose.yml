@@ -1,0 +1,24 @@
+version: '2.1'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tarot-backend
+    ports:
+      - "55551:55551"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev # Set the Spring profile
+    depends_on:
+      - frontend
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: tarot-frontend
+    ports:
+      - "55552:55552"
+    environment:
+      - NODE_ENV=development
