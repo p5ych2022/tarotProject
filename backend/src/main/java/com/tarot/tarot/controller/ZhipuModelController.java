@@ -19,7 +19,7 @@ import static com.tarot.tarot.service.TarotServiceImpl.cards;
 
 
 @RestController
-@CrossOrigin(origins = {"http://127.0.0.1:55552", "http://43.138.65.118:55552", "http://yz.psych.green:55552"})
+// @CrossOrigin(origins = {"http://127.0.0.1:55552", "http://43.138.65.118:55552", "http://yz.psych.green:55552"})
 public class ZhipuModelController {
     @Autowired
     // private ZhipuAiChatModel zhipuAiChatModel;

@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 public class DeepSeekConfig {
     Dotenv dotenv = Dotenv.load();
     String apiKey = dotenv.get("HS_API_KEY");
-    private static final String MODEL_NAME = "ep-20250225180056-t9tl8";
+    private static final String MODEL_NAME = "deepseek-v3-250324";
     private final ArkService service = ArkService.builder()
                 .apiKey(apiKey)
                 .timeout(Duration.ofSeconds(120))
